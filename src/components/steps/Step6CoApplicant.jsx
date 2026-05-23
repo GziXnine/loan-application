@@ -80,13 +80,11 @@ const Step6CoApplicant = forwardRef((props, ref) => {
       {hasCoapplicant && (
         <div className="space-y-6 animate-fade-in pt-4 border-t border-surface-200">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <Input
-              label="Co-Applicant Full Name"
-              placeholder="As per PAN"
-              required
-              error={errors.coapplicantName?.message}
-              {...register('coapplicantName')}
-            />
+            <Input error={errors.coapplicantName?.message}>
+              <Input.Label required>Co-Applicant Full Name</Input.Label>
+              <Input.Field placeholder="As per PAN" {...register('coapplicantName')} />
+              <Input.Error />
+            </Input>
 
             <Select
               label="Relationship with Applicant"
@@ -112,25 +110,22 @@ const Step6CoApplicant = forwardRef((props, ref) => {
           />
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <Input
-              label="Email Address"
-              type="email"
-              placeholder="co-applicant@example.com"
-              required
-              error={errors.coapplicantEmail?.message}
-              {...register('coapplicantEmail')}
-            />
+            <Input error={errors.coapplicantEmail?.message}>
+              <Input.Label required>Email Address</Input.Label>
+              <Input.Field type="email" placeholder="co-applicant@example.com" {...register('coapplicantEmail')} />
+              <Input.Error />
+            </Input>
 
-            <Input
-              label="Mobile Number"
-              type="tel"
-              placeholder="10-digit mobile number"
-              required
-              leftIcon={<span className="text-sm">+91</span>}
-              inputClassName="pl-12"
-              error={errors.coapplicantMobile?.message}
-              {...register('coapplicantMobile')}
-            />
+            <Input error={errors.coapplicantMobile?.message}>
+              <Input.Label required>Mobile Number</Input.Label>
+              <Input.Field
+                type="tel"
+                placeholder="10-digit mobile number"
+                leftIcon={<span className="text-sm">+91</span>}
+                {...register('coapplicantMobile')}
+              />
+              <Input.Error />
+            </Input>
           </div>
         </div>
       )}
