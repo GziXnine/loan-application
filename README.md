@@ -3,7 +3,8 @@
 LendSwift is a production-grade, 8-step multi-step loan application form built with React and Vite. It is designed to handle complex requirements including conditional routing, AES-256 state encryption, E-Signatures, and RBI-compliant data collection securely and responsively.
 
 ## 🚀 Live Deployment
-- **Vercel Preview URL:** *(Will be generated upon deployment)*
+- **Vercel Application:** [https://loan-application-wheat.vercel.app](https://loan-application-wheat.vercel.app)
+- **GitHub Repository:** [https://github.com/GziXnine/loan-application](https://github.com/GziXnine/loan-application)
 
 ## 📦 Setup Instructions
 
@@ -11,7 +12,7 @@ To run this application locally, ensure you have Node.js 18+ installed.
 
 1. **Clone & Install Dependencies**
 ```bash
-git clone <your-repo-url>
+git clone https://github.com/GziXnine/loan-application.git
 cd loan-application
 npm install
 ```
