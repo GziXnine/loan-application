@@ -1,4 +1,4 @@
-import { forwardRef, useImperativeHandle } from 'react';
+import { forwardRef, useImperativeHandle, useEffect, useState } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { step4Schema } from '../../utils/validationSchemas';
@@ -16,6 +16,7 @@ const Step4AddressDetails = forwardRef((props, ref) => {
     control,
     trigger,
     getValues,
+    setValue,
     watch,
     formState: { errors },
   } = useForm({
@@ -25,7 +26,37 @@ const Step4AddressDetails = forwardRef((props, ref) => {
   });
 
   const residenceType = watch('residenceType');
+  const pincode = watch('pincode');
   const isRented = residenceType === 'rented';
+  
+  const [isFetchingPincode, setIsFetchingPincode] = useState(false);
+
+  // Address Autocomplete based on Pincode
+  useEffect(() => {
+    if (pincode && pincode.length === 6 && /^[1-9][0-9]{5}$/.test(pincode)) {
+      const fetchPincodeDetails = async () => {
+        setIsFetchingPincode(true);
+        try {
+          // Using the free Indian Postal Pincode API
+          const response = await fetch(`https://api.postalpincode.in/pincode/${pincode}`);
+          const data = await response.json();
+          
+          if (data && data[0].Status === 'Success' && data[0].PostOffice && data[0].PostOffice.length > 0) {
+            const postOffice = data[0].PostOffice[0];
+            // Update the form fields automatically
+            setValue('city', postOffice.District || postOffice.Block, { shouldValidate: true });
+            setValue('state', postOffice.State, { shouldValidate: true });
+          }
+        } catch (error) {
+          console.error("Failed to fetch pincode details:", error);
+        } finally {
+          setIsFetchingPincode(false);
+        }
+      };
+      
+      fetchPincodeDetails();
+    }
+  }, [pincode, setValue]);
 
   useImperativeHandle(ref, () => ({
     validate: async () => {
@@ -72,18 +103,18 @@ const Step4AddressDetails = forwardRef((props, ref) => {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <Input error={errors.city?.message}>
           <Input.Label required>City</Input.Label>
-          <Input.Field placeholder="e.g. Mumbai" {...register('city')} />
+          <Input.Field placeholder="e.g. Mumbai" {...register('city')} disabled={isFetchingPincode} />
           <Input.Error />
         </Input>
 
         <Input error={errors.state?.message}>
           <Input.Label required>State</Input.Label>
-          <Input.Field placeholder="e.g. Maharashtra" {...register('state')} />
+          <Input.Field placeholder="e.g. Maharashtra" {...register('state')} disabled={isFetchingPincode} />
           <Input.Error />
         </Input>
 
         <Input error={errors.pincode?.message}>
-          <Input.Label required>Pincode</Input.Label>
+          <Input.Label required>Pincode {isFetchingPincode && <span className="text-2xs text-primary-500 font-normal ml-2 animate-pulse">(Finding city...)</span>}</Input.Label>
           <Input.Field
             type="text"
             inputMode="numeric"
