@@ -135,9 +135,9 @@ export default function Wizard() {
 
   // Handle Save Draft
   const handleSaveDraft = useCallback(() => {
-    // Will be implemented with auto-save encryption in Sprint 2
-    const now = new Date();
-    useLoanStore.getState().setLastSavedAt(now.toISOString());
+    import('../../hooks/useAutoSave').then(({ triggerManualSave }) => {
+      triggerManualSave();
+    });
   }, []);
 
   // Get the current step component

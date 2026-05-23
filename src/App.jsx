@@ -1,6 +1,8 @@
 import { lazy, Suspense } from 'react';
 import Wizard from './components/wizard/Wizard';
+import ResumeModal from './components/wizard/ResumeModal';
 import useLoanStore from './store/loanStore';
+import useAutoSave, { clearSavedState } from './hooks/useAutoSave';
 
 /**
  * LendSwift Loan Application
@@ -10,6 +12,9 @@ import useLoanStore from './store/loanStore';
  */
 function App() {
   const isSubmitted = useLoanStore((state) => state.isSubmitted);
+  
+  // Initialize auto-save background loop
+  useAutoSave();
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-surface-50 via-white to-primary-50/30">
@@ -46,6 +51,9 @@ function App() {
       <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {isSubmitted ? <SuccessScreen /> : <Wizard />}
       </main>
+
+      {/* Modals */}
+      <ResumeModal />
 
       {/* Footer */}
       <footer className="border-t border-surface-200/50 mt-auto">
@@ -118,7 +126,10 @@ function SuccessScreen() {
         <div className="flex flex-col sm:flex-row gap-3 justify-center">
           <button
             type="button"
-            onClick={resetForm}
+            onClick={() => {
+              clearSavedState();
+              resetForm();
+            }}
             className="btn-secondary"
           >
             Start New Application
