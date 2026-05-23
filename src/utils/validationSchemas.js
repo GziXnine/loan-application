@@ -72,3 +72,80 @@ export const step4Schema = z.object({
     path: ['rentAmount'],
   }
 );
+
+export const step5Schema = z.object({
+  employmentType: z.enum(['salaried', 'self_employed'], {
+    required_error: 'Please select employment type',
+  }),
+  // Salaried fields
+  companyName: z.string().optional(),
+  designation: z.string().optional(),
+  workExperience: z.coerce.number().optional(),
+  monthlyIncome: z.coerce.number().optional(),
+  // Self-employed fields
+  businessName: z.string().optional(),
+  businessType: z.string().optional(),
+  businessVintage: z.coerce.number().optional(),
+  annualTurnover: z.coerce.number().optional(),
+  monthlyProfit: z.coerce.number().optional(),
+  companyRegistrationNumber: z.string().optional(),
+  gstNumber: z.string().optional(),
+}).superRefine((data, ctx) => {
+  if (data.employmentType === 'salaried') {
+    if (!data.companyName || data.companyName.length < 2) {
+      ctx.addIssue({ code: z.ZodIssueCode.custom, message: 'Company name is required', path: ['companyName'] });
+    }
+    if (!data.designation || data.designation.length < 2) {
+      ctx.addIssue({ code: z.ZodIssueCode.custom, message: 'Designation is required', path: ['designation'] });
+    }
+    if (data.workExperience === undefined || data.workExperience < 0) {
+      ctx.addIssue({ code: z.ZodIssueCode.custom, message: 'Valid experience is required', path: ['workExperience'] });
+    }
+    if (!data.monthlyIncome || data.monthlyIncome <= 0) {
+      ctx.addIssue({ code: z.ZodIssueCode.custom, message: 'Monthly income is required', path: ['monthlyIncome'] });
+    }
+  } else if (data.employmentType === 'self_employed') {
+    if (!data.businessName || data.businessName.length < 2) {
+      ctx.addIssue({ code: z.ZodIssueCode.custom, message: 'Business name is required', path: ['businessName'] });
+    }
+    if (!data.businessType) {
+      ctx.addIssue({ code: z.ZodIssueCode.custom, message: 'Business type is required', path: ['businessType'] });
+    }
+    if (data.businessVintage === undefined || data.businessVintage < 0) {
+      ctx.addIssue({ code: z.ZodIssueCode.custom, message: 'Valid vintage is required', path: ['businessVintage'] });
+    }
+    if (!data.annualTurnover || data.annualTurnover <= 0) {
+      ctx.addIssue({ code: z.ZodIssueCode.custom, message: 'Annual turnover is required', path: ['annualTurnover'] });
+    }
+    if (data.gstNumber && !/^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/.test(data.gstNumber)) {
+      ctx.addIssue({ code: z.ZodIssueCode.custom, message: 'Invalid GST format', path: ['gstNumber'] });
+    }
+  }
+});
+
+export const step6Schema = z.object({
+  hasCoapplicant: z.boolean(),
+  coapplicantName: z.string().optional(),
+  coapplicantRelationship: z.string().optional(),
+  coapplicantIncome: z.coerce.number().optional(),
+  coapplicantEmail: z.string().optional(),
+  coapplicantMobile: z.string().optional(),
+}).superRefine((data, ctx) => {
+  if (data.hasCoapplicant) {
+    if (!data.coapplicantName || data.coapplicantName.length < 3) {
+      ctx.addIssue({ code: z.ZodIssueCode.custom, message: 'Full name must be at least 3 characters', path: ['coapplicantName'] });
+    }
+    if (!data.coapplicantRelationship) {
+      ctx.addIssue({ code: z.ZodIssueCode.custom, message: 'Please select a relationship', path: ['coapplicantRelationship'] });
+    }
+    if (!data.coapplicantIncome || data.coapplicantIncome <= 0) {
+      ctx.addIssue({ code: z.ZodIssueCode.custom, message: 'Income is required', path: ['coapplicantIncome'] });
+    }
+    if (!data.coapplicantEmail || !/^\S+@\S+\.\S+$/.test(data.coapplicantEmail)) {
+      ctx.addIssue({ code: z.ZodIssueCode.custom, message: 'Valid email is required', path: ['coapplicantEmail'] });
+    }
+    if (!data.coapplicantMobile || !/^[6-9]\d{9}$/.test(data.coapplicantMobile)) {
+      ctx.addIssue({ code: z.ZodIssueCode.custom, message: 'Valid 10-digit mobile is required', path: ['coapplicantMobile'] });
+    }
+  }
+});
