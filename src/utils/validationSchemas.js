@@ -149,3 +149,25 @@ export const step6Schema = z.object({
     }
   }
 });
+
+export const step7Schema = z.object({
+  identityProof: z.array(z.any()).min(1, 'Identity proof is required'),
+  addressProof: z.array(z.any()).min(1, 'Address proof is required'),
+  incomeProof: z.array(z.any()).min(1, 'Income proof is required'),
+  additionalDocs: z.array(z.any()).optional(),
+});
+
+export const step8Schema = z.object({
+  termsAccepted: z.boolean().refine((val) => val === true, {
+    message: 'You must accept the Terms and Conditions',
+  }),
+  kfsAccepted: z.boolean().refine((val) => val === true, {
+    message: 'You must acknowledge the Key Fact Statement',
+  }),
+  consentToDataProcessing: z.boolean().refine((val) => val === true, {
+    message: 'You must consent to data processing',
+  }),
+  signature: z.string({
+    required_error: 'Signature is required',
+  }).min(10, 'Signature is required'), // Data URL will be much longer than 10 chars
+});
