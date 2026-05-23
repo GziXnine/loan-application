@@ -9,7 +9,7 @@
     "preview": "vite preview",
     "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
     "cypress:open": "cypress open",
-    "cypress:run": "cypress run"
+    "test:e2e": "cypress run"
   },
   "dependencies": {
     "react": "^18.3.1",
