@@ -69,32 +69,24 @@ const Step5Employment = forwardRef((props, ref) => {
 
       {employmentType === 'salaried' && (
         <div className="space-y-6 animate-fade-in pt-4">
-          <Input
-            label="Company Name"
-            placeholder="e.g. Tata Consultancy Services"
-            required
-            error={errors.companyName?.message}
-            {...register('companyName')}
-          />
+          <Input error={errors.companyName?.message}>
+            <Input.Label required>Company Name</Input.Label>
+            <Input.Field placeholder="e.g. Tata Consultancy Services" {...register('companyName')} />
+            <Input.Error />
+          </Input>
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <Input
-              label="Designation"
-              placeholder="e.g. Software Engineer"
-              required
-              error={errors.designation?.message}
-              {...register('designation')}
-            />
+            <Input error={errors.designation?.message}>
+              <Input.Label required>Designation</Input.Label>
+              <Input.Field placeholder="e.g. Software Engineer" {...register('designation')} />
+              <Input.Error />
+            </Input>
             
-            <Input
-              label="Work Experience (Years)"
-              type="number"
-              placeholder="e.g. 5"
-              required
-              min={0}
-              error={errors.workExperience?.message}
-              {...register('workExperience')}
-            />
+            <Input error={errors.workExperience?.message}>
+              <Input.Label required>Work Experience (Years)</Input.Label>
+              <Input.Field type="number" min={0} placeholder="e.g. 5" {...register('workExperience')} />
+              <Input.Error />
+            </Input>
           </div>
 
           <Controller
@@ -116,32 +108,24 @@ const Step5Employment = forwardRef((props, ref) => {
       {employmentType === 'self_employed' && (
         <div className="space-y-6 animate-fade-in pt-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <Input
-              label="Business Name"
-              placeholder="e.g. Sharma Traders"
-              required
-              error={errors.businessName?.message}
-              {...register('businessName')}
-            />
+            <Input error={errors.businessName?.message}>
+              <Input.Label required>Business Name</Input.Label>
+              <Input.Field placeholder="e.g. Sharma Traders" {...register('businessName')} />
+              <Input.Error />
+            </Input>
             
-            <Input
-              label="Business Type"
-              placeholder="e.g. Retail, Manufacturing, Services"
-              required
-              error={errors.businessType?.message}
-              {...register('businessType')}
-            />
+            <Input error={errors.businessType?.message}>
+              <Input.Label required>Business Type</Input.Label>
+              <Input.Field placeholder="e.g. Retail, Manufacturing, Services" {...register('businessType')} />
+              <Input.Error />
+            </Input>
           </div>
 
-          <Input
-            label="Business Vintage (Years)"
-            type="number"
-            placeholder="e.g. 3"
-            required
-            min={0}
-            error={errors.businessVintage?.message}
-            {...register('businessVintage')}
-          />
+          <Input error={errors.businessVintage?.message}>
+            <Input.Label required>Business Vintage (Years)</Input.Label>
+            <Input.Field type="number" min={0} placeholder="e.g. 3" {...register('businessVintage')} />
+            <Input.Error />
+          </Input>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <Controller
@@ -173,19 +157,17 @@ const Step5Employment = forwardRef((props, ref) => {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <Input
-              label="Company Registration Number (Optional)"
-              placeholder="e.g. U74999MH..."
-              error={errors.companyRegistrationNumber?.message}
-              {...register('companyRegistrationNumber')}
-            />
+            <Input error={errors.companyRegistrationNumber?.message}>
+              <Input.Label>Company Registration Number (Optional)</Input.Label>
+              <Input.Field placeholder="e.g. U74999MH..." {...register('companyRegistrationNumber')} />
+              <Input.Error />
+            </Input>
             
-            <Input
-              label="GST Number (Optional)"
-              placeholder="15-digit GSTIN"
-              error={errors.gstNumber?.message}
-              {...register('gstNumber')}
-            />
+            <Input error={errors.gstNumber?.message}>
+              <Input.Label>GST Number (Optional)</Input.Label>
+              <Input.Field placeholder="15-digit GSTIN" {...register('gstNumber')} />
+              <Input.Error />
+            </Input>
           </div>
         </div>
       )}
