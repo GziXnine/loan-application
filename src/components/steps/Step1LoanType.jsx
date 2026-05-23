@@ -101,13 +101,14 @@ const Step1LoanType = forwardRef((props, ref) => {
       </div>
 
       <div className="pt-2">
-        <Input
-          label="Purpose of Loan"
-          placeholder="e.g. Home Renovation, Medical Emergency"
-          required
-          error={errors.loanPurpose?.message}
-          {...register('loanPurpose')}
-        />
+        <Input error={errors.loanPurpose?.message}>
+          <Input.Label required>Purpose of Loan</Input.Label>
+          <Input.Field
+            placeholder="e.g. Home Renovation, Medical Emergency"
+            {...register('loanPurpose')}
+          />
+          <Input.Error />
+        </Input>
       </div>
     </div>
   );
