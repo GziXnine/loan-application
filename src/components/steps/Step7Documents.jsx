@@ -74,22 +74,14 @@ const Step7Documents = forwardRef((props, ref) => {
             name="identityProof"
             control={control}
             render={({ field }) => (
-              <>
-                <FileUpload
-                  label="Identity Proof (PAN/Aadhaar/Passport)"
-                  required
-                  error={errors.identityProof?.message}
-                  onChange={(files) => {
-                    // Append files up to max limit of 3
-                    const newFiles = [...(field.value || []), ...files].slice(0, 3);
-                    field.onChange(newFiles);
-                  }}
-                />
-                <FilePreview 
-                  files={field.value} 
-                  onRemove={(idx) => field.onChange(field.value.filter((_, i) => i !== idx))} 
-                />
-              </>
+              <FileUpload
+                label="Identity Proof (PAN/Aadhaar/Passport)"
+                required
+                error={errors.identityProof?.message}
+                value={field.value}
+                onChange={field.onChange}
+                renderPreview={(files, onRemove) => <FilePreview files={files} onRemove={onRemove} />}
+              />
             )}
           />
         </div>
@@ -99,21 +91,14 @@ const Step7Documents = forwardRef((props, ref) => {
             name="addressProof"
             control={control}
             render={({ field }) => (
-              <>
-                <FileUpload
-                  label="Address Proof (Utility Bill/Rental Agreement)"
-                  required
-                  error={errors.addressProof?.message}
-                  onChange={(files) => {
-                    const newFiles = [...(field.value || []), ...files].slice(0, 3);
-                    field.onChange(newFiles);
-                  }}
-                />
-                <FilePreview 
-                  files={field.value} 
-                  onRemove={(idx) => field.onChange(field.value.filter((_, i) => i !== idx))} 
-                />
-              </>
+              <FileUpload
+                label="Address Proof (Utility Bill/Rental Agreement)"
+                required
+                error={errors.addressProof?.message}
+                value={field.value}
+                onChange={field.onChange}
+                renderPreview={(files, onRemove) => <FilePreview files={files} onRemove={onRemove} />}
+              />
             )}
           />
         </div>
@@ -123,21 +108,14 @@ const Step7Documents = forwardRef((props, ref) => {
             name="incomeProof"
             control={control}
             render={({ field }) => (
-              <>
-                <FileUpload
-                  label="Income Proof (Bank Statement/Salary Slips)"
-                  required
-                  error={errors.incomeProof?.message}
-                  onChange={(files) => {
-                    const newFiles = [...(field.value || []), ...files].slice(0, 3);
-                    field.onChange(newFiles);
-                  }}
-                />
-                <FilePreview 
-                  files={field.value} 
-                  onRemove={(idx) => field.onChange(field.value.filter((_, i) => i !== idx))} 
-                />
-              </>
+              <FileUpload
+                label="Income Proof (Bank Statement/Salary Slips)"
+                required
+                error={errors.incomeProof?.message}
+                value={field.value}
+                onChange={field.onChange}
+                renderPreview={(files, onRemove) => <FilePreview files={files} onRemove={onRemove} />}
+              />
             )}
           />
         </div>
@@ -147,20 +125,13 @@ const Step7Documents = forwardRef((props, ref) => {
             name="additionalDocs"
             control={control}
             render={({ field }) => (
-              <>
-                <FileUpload
-                  label="Additional Documents (Optional)"
-                  error={errors.additionalDocs?.message}
-                  onChange={(files) => {
-                    const newFiles = [...(field.value || []), ...files].slice(0, 3);
-                    field.onChange(newFiles);
-                  }}
-                />
-                <FilePreview 
-                  files={field.value} 
-                  onRemove={(idx) => field.onChange(field.value.filter((_, i) => i !== idx))} 
-                />
-              </>
+              <FileUpload
+                label="Additional Documents (Optional)"
+                error={errors.additionalDocs?.message}
+                value={field.value}
+                onChange={field.onChange}
+                renderPreview={(files, onRemove) => <FilePreview files={files} onRemove={onRemove} />}
+              />
             )}
           />
         </div>
