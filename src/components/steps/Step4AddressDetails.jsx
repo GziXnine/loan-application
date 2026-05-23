@@ -63,53 +63,44 @@ const Step4AddressDetails = forwardRef((props, ref) => {
         {...register('residenceType')}
       />
 
-      <Input
-        label="Current Address Line 1"
-        placeholder="House/Flat No., Building Name, Street"
-        required
-        error={errors.currentAddress?.message}
-        {...register('currentAddress')}
-      />
+      <Input error={errors.currentAddress?.message}>
+        <Input.Label required>Current Address Line 1</Input.Label>
+        <Input.Field placeholder="House/Flat No., Building Name, Street" {...register('currentAddress')} />
+        <Input.Error />
+      </Input>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <Input
-          label="City"
-          placeholder="e.g. Mumbai"
-          required
-          error={errors.city?.message}
-          {...register('city')}
-        />
+        <Input error={errors.city?.message}>
+          <Input.Label required>City</Input.Label>
+          <Input.Field placeholder="e.g. Mumbai" {...register('city')} />
+          <Input.Error />
+        </Input>
 
-        <Input
-          label="State"
-          placeholder="e.g. Maharashtra"
-          required
-          error={errors.state?.message}
-          {...register('state')}
-        />
+        <Input error={errors.state?.message}>
+          <Input.Label required>State</Input.Label>
+          <Input.Field placeholder="e.g. Maharashtra" {...register('state')} />
+          <Input.Error />
+        </Input>
 
-        <Input
-          label="Pincode"
-          placeholder="e.g. 400001"
-          type="text"
-          inputMode="numeric"
-          maxLength={6}
-          required
-          error={errors.pincode?.message}
-          {...register('pincode')}
-        />
+        <Input error={errors.pincode?.message}>
+          <Input.Label required>Pincode</Input.Label>
+          <Input.Field
+            type="text"
+            inputMode="numeric"
+            maxLength={6}
+            placeholder="e.g. 400001"
+            {...register('pincode')}
+          />
+          <Input.Error />
+        </Input>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <Input
-          label="Years at Current Address"
-          type="number"
-          placeholder="e.g. 5"
-          required
-          min={0}
-          error={errors.yearsAtCurrentAddress?.message}
-          {...register('yearsAtCurrentAddress')}
-        />
+        <Input error={errors.yearsAtCurrentAddress?.message}>
+          <Input.Label required>Years at Current Address</Input.Label>
+          <Input.Field type="number" min={0} placeholder="e.g. 5" {...register('yearsAtCurrentAddress')} />
+          <Input.Error />
+        </Input>
 
         {isRented && (
           <Controller
