@@ -38,3 +38,37 @@ export const step2Schema = z.object({
     required_error: 'Please select your marital status',
   }),
 });
+
+export const step3Schema = z.object({
+  panNumber: z.string().regex(/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/, 'Invalid PAN format (e.g. ABCDE1234F)'),
+  isPanVerified: z.boolean().refine((val) => val === true, {
+    message: 'Please verify your PAN to proceed',
+  }),
+  aadhaarNumber: z.string().regex(/^\d{12}$/, 'Aadhaar must be exactly 12 digits'),
+  isAadhaarVerified: z.boolean().refine((val) => val === true, {
+    message: 'Please verify your Aadhaar to proceed',
+  }),
+});
+
+export const step4Schema = z.object({
+  residenceType: z.enum(['owned', 'rented', 'company_provided', 'family_owned'], {
+    required_error: 'Please select residence type',
+  }),
+  currentAddress: z.string().min(10, 'Address must be at least 10 characters').max(200, 'Address is too long'),
+  city: z.string().min(2, 'City name is required'),
+  state: z.string().min(2, 'State name is required'),
+  pincode: z.string().regex(/^[1-9][0-9]{5}$/, 'Invalid Indian pincode'),
+  yearsAtCurrentAddress: z.coerce.number().min(0, 'Cannot be negative').max(100, 'Invalid years'),
+  rentAmount: z.coerce.number().optional().or(z.literal('')),
+}).refine(
+  (data) => {
+    if (data.residenceType === 'rented' && (!data.rentAmount || data.rentAmount <= 0)) {
+      return false;
+    }
+    return true;
+  },
+  {
+    message: 'Rent amount is required for rented residence',
+    path: ['rentAmount'],
+  }
+);
