@@ -2,6 +2,16 @@ import { forwardRef } from 'react';
 import { useDropzone } from 'react-dropzone';
 import clsx from 'clsx';
 
+/**
+ * FileUpload Component with Render Props Pattern
+ * 
+ * Usage:
+ * <FileUpload
+ *   error={error}
+ *   onChange={onChange}
+ *   renderPreview={(files, onRemove) => <CustomPreview files={files} onRemove={onRemove} />}
+ * />
+ */
 const FileUpload = forwardRef(function FileUpload(
   {
     label,
@@ -15,18 +25,30 @@ const FileUpload = forwardRef(function FileUpload(
     maxSize = 5242880, // 5MB
     accept = { 'application/pdf': ['.pdf'], 'image/jpeg': ['.jpg', '.jpeg'], 'image/png': ['.png'] },
     className,
+    value = [],
+    renderPreview, // The render prop
   },
   ref
 ) {
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop: (acceptedFiles) => {
-      if (onChange) onChange(acceptedFiles);
+      if (onChange) {
+        // Append new files up to the limit
+        const newFiles = [...value, ...acceptedFiles].slice(0, maxFiles);
+        onChange(newFiles);
+      }
     },
     maxFiles,
     maxSize,
     accept,
     disabled
   });
+
+  const handleRemove = (idxToRemove) => {
+    if (onChange) {
+      onChange(value.filter((_, i) => i !== idxToRemove));
+    }
+  };
 
   return (
     <div className={clsx('form-field', className)}>
@@ -35,6 +57,7 @@ const FileUpload = forwardRef(function FileUpload(
           {label}
         </label>
       )}
+      
       <div
         {...getRootProps()}
         className={clsx(
@@ -55,8 +78,12 @@ const FileUpload = forwardRef(function FileUpload(
           PDF, JPG, PNG up to 5MB (Max {maxFiles} files)
         </p>
       </div>
+
       {error && <p className="text-xs text-error-500 mt-1.5">{error}</p>}
       {helpText && !error && <p className="form-help-text">{helpText}</p>}
+
+      {/* Execute Render Prop for custom preview UI */}
+      {renderPreview && value.length > 0 && renderPreview(value, handleRemove)}
     </div>
   );
 });
