@@ -58,21 +58,17 @@ const Step2PersonalInfo = forwardRef((props, ref) => {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <Input
-          label="Full Name"
-          placeholder="As per PAN card"
-          required
-          error={errors.fullName?.message}
-          {...register('fullName')}
-        />
+        <Input error={errors.fullName?.message}>
+          <Input.Label required>Full Name</Input.Label>
+          <Input.Field placeholder="As per PAN card" {...register('fullName')} />
+          <Input.Error />
+        </Input>
 
-        <Input
-          label="Date of Birth"
-          type="date"
-          required
-          error={errors.dateOfBirth?.message}
-          {...register('dateOfBirth')}
-        />
+        <Input error={errors.dateOfBirth?.message}>
+          <Input.Label required>Date of Birth</Input.Label>
+          <Input.Field type="date" {...register('dateOfBirth')} />
+          <Input.Error />
+        </Input>
       </div>
 
       <div className="pt-2">
@@ -93,14 +89,11 @@ const Step2PersonalInfo = forwardRef((props, ref) => {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-2">
-        <Input
-          label="Email Address"
-          type="email"
-          placeholder="your.email@example.com"
-          required
-          error={errors.email?.message}
-          {...register('email')}
-        />
+        <Input error={errors.email?.message}>
+          <Input.Label required>Email Address</Input.Label>
+          <Input.Field type="email" placeholder="your.email@example.com" {...register('email')} />
+          <Input.Error />
+        </Input>
 
         <Select
           label="Marital Status"
@@ -112,26 +105,27 @@ const Step2PersonalInfo = forwardRef((props, ref) => {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-2">
-        <Input
-          label="Mobile Number"
-          type="tel"
-          placeholder="10-digit mobile number"
-          required
-          leftIcon={<span className="text-sm">+91</span>}
-          inputClassName="pl-12"
-          error={errors.mobileNumber?.message}
-          {...register('mobileNumber')}
-        />
+        <Input error={errors.mobileNumber?.message}>
+          <Input.Label required>Mobile Number</Input.Label>
+          <Input.Field
+            type="tel"
+            placeholder="10-digit mobile number"
+            leftIcon={<span className="text-sm">+91</span>}
+            {...register('mobileNumber')}
+          />
+          <Input.Error />
+        </Input>
 
-        <Input
-          label="Alternate Mobile (Optional)"
-          type="tel"
-          placeholder="10-digit mobile number"
-          leftIcon={<span className="text-sm">+91</span>}
-          inputClassName="pl-12"
-          error={errors.alternateMobile?.message}
-          {...register('alternateMobile')}
-        />
+        <Input error={errors.alternateMobile?.message}>
+          <Input.Label>Alternate Mobile (Optional)</Input.Label>
+          <Input.Field
+            type="tel"
+            placeholder="10-digit mobile number"
+            leftIcon={<span className="text-sm">+91</span>}
+            {...register('alternateMobile')}
+          />
+          <Input.Error />
+        </Input>
       </div>
     </div>
   );
