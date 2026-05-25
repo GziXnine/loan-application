@@ -3,7 +3,7 @@
 import { forwardRef, useImperativeHandle, useEffect } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { step6Schema } from "../../utils/validationSchemas";
+import { getSchemaForStep } from "../../utils/schemaFactory";
 import useLoanStore from "../../store/loanStore";
 import Input from "../common/Input";
 import Select from "../common/Select";
@@ -18,6 +18,8 @@ const Step6CoApplicant = forwardRef((props, ref) => {
   const stepData = useLoanStore((state) => state.getStepData(6));
   const updateStepData = useLoanStore((state) => state.updateStepData);
 
+  const formData = useLoanStore((state) => state.formData);
+
   const {
     register,
     control,
@@ -27,7 +29,7 @@ const Step6CoApplicant = forwardRef((props, ref) => {
     setValue,
     formState: { errors },
   } = useForm({
-    resolver: zodResolver(step6Schema),
+    resolver: zodResolver(getSchemaForStep(6, formData)),
     defaultValues: stepData,
     mode: "onChange",
   });
