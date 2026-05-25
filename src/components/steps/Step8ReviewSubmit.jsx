@@ -3,7 +3,7 @@
 import { forwardRef, useImperativeHandle } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { step8Schema } from "../../utils/validationSchemas";
+import { getSchemaForStep } from "../../utils/schemaFactory";
 import useLoanStore from "../../store/loanStore";
 import Checkbox from "../common/Checkbox";
 import { buildPreApprovalSummary, formatINR } from "../../utils/emiCalculator";
@@ -23,7 +23,7 @@ const Step8ReviewSubmit = forwardRef((props, ref) => {
     watch,
     formState: { errors },
   } = useForm({
-    resolver: zodResolver(step8Schema),
+    resolver: zodResolver(getSchemaForStep(8, formData)),
     defaultValues: stepData,
     mode: "onChange",
   });

@@ -10,7 +10,7 @@ import {
 } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { step7Schema } from "../../utils/validationSchemas";
+import { getSchemaForStep } from "../../utils/schemaFactory";
 import useLoanStore from "../../store/loanStore";
 import FileUpload from "../common/FileUpload";
 import SignatureCanvas from "../common/SignatureCanvas";
@@ -35,6 +35,8 @@ const Step7Documents = forwardRef((props, ref) => {
     additionalDocs: "pending",
   });
 
+  const formData = useLoanStore((state) => state.formData);
+
   const {
     control,
     trigger,
@@ -44,7 +46,7 @@ const Step7Documents = forwardRef((props, ref) => {
     watch,
     formState: { errors },
   } = useForm({
-    resolver: zodResolver(step7Schema),
+    resolver: zodResolver(getSchemaForStep(7, formData)),
     defaultValues: stepData,
     mode: "onChange",
   });
