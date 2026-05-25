@@ -1,4 +1,4 @@
-import { forwardRef, useImperativeHandle, useEffect, useState } from 'react';
+import { forwardRef, useImperativeHandle, useEffect, useMemo, useState } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { step4Schema } from '../../utils/validationSchemas';
@@ -6,6 +6,8 @@ import useLoanStore from '../../store/loanStore';
 import Input from '../common/Input';
 import Select from '../common/Select';
 import CurrencyInput from '../common/CurrencyInput';
+import Checkbox from '../common/Checkbox';
+import usePinCodeLookup from '../../hooks/usePinCodeLookup';
 
 const Step4AddressDetails = forwardRef((props, ref) => {
   const stepData = useLoanStore((state) => state.getStepData(4));
@@ -27,36 +29,55 @@ const Step4AddressDetails = forwardRef((props, ref) => {
 
   const residenceType = watch('residenceType');
   const pincode = watch('pincode');
+  const stateValue = watch('state');
+  const currentAddress = watch('currentAddress');
+  const cityValue = watch('city');
+  const sameAsPermanent = watch('sameAsPermanent');
+  const yearsAtCurrentAddress = watch('yearsAtCurrentAddress');
   const isRented = residenceType === 'rented';
-  
-  const [isFetchingPincode, setIsFetchingPincode] = useState(false);
+  const [stateEdited, setStateEdited] = useState(false);
 
-  // Address Autocomplete based on Pincode
+  const { city, state, postOffice, isLoading, error: pincodeError } = usePinCodeLookup(pincode);
+
   useEffect(() => {
-    if (pincode && pincode.length === 6 && /^[1-9][0-9]{5}$/.test(pincode)) {
-      const fetchPincodeDetails = async () => {
-        setIsFetchingPincode(true);
-        try {
-          // Using the free Indian Postal Pincode API
-          const response = await fetch(`https://api.postalpincode.in/pincode/${pincode}`);
-          const data = await response.json();
-          
-          if (data && data[0].Status === 'Success' && data[0].PostOffice && data[0].PostOffice.length > 0) {
-            const postOffice = data[0].PostOffice[0];
-            // Update the form fields automatically
-            setValue('city', postOffice.District || postOffice.Block, { shouldValidate: true });
-            setValue('state', postOffice.State, { shouldValidate: true });
-          }
-        } catch (error) {
-          console.error("Failed to fetch pincode details:", error);
-        } finally {
-          setIsFetchingPincode(false);
-        }
-      };
-      
-      fetchPincodeDetails();
+    if (city) {
+      setValue('city', city, { shouldValidate: true });
     }
-  }, [pincode, setValue]);
+    if (state && !stateEdited) {
+      setValue('state', state, { shouldValidate: true });
+    }
+  }, [city, state, setValue, stateEdited]);
+
+  useEffect(() => {
+    if (pincode && pincode.length === 6) {
+      setStateEdited(false);
+    }
+  }, [pincode]);
+
+  useEffect(() => {
+    if (sameAsPermanent) {
+      setValue('permanentAddress', currentAddress, { shouldValidate: true });
+      setValue('permanentCity', cityValue, { shouldValidate: true });
+      setValue('permanentState', stateValue, { shouldValidate: true });
+      setValue('permanentPincode', pincode, { shouldValidate: true });
+    }
+  }, [sameAsPermanent, currentAddress, cityValue, stateValue, pincode, setValue]);
+
+  const showPreviousAddress = useMemo(
+    () => {
+      if (yearsAtCurrentAddress === '' || yearsAtCurrentAddress === null || yearsAtCurrentAddress === undefined) {
+        return false;
+      }
+      const value = Number(yearsAtCurrentAddress);
+      return !Number.isNaN(value) && value < 1;
+    },
+    [yearsAtCurrentAddress]
+  );
+
+  const showStateMismatchWarning = useMemo(
+    () => stateEdited && state && stateValue && stateValue.toLowerCase() !== state.toLowerCase(),
+    [stateValue, state, stateEdited]
+  );
 
   useImperativeHandle(ref, () => ({
     validate: async () => {
@@ -90,6 +111,7 @@ const Step4AddressDetails = forwardRef((props, ref) => {
         label="Residence Type"
         options={residenceOptions}
         required
+        variant="custom"
         error={errors.residenceType?.message}
         {...register('residenceType')}
       />
@@ -103,18 +125,31 @@ const Step4AddressDetails = forwardRef((props, ref) => {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <Input error={errors.city?.message}>
           <Input.Label required>City</Input.Label>
-          <Input.Field placeholder="e.g. Mumbai" {...register('city')} disabled={isFetchingPincode} />
+          <Input.Field placeholder="e.g. Mumbai" {...register('city')} />
           <Input.Error />
         </Input>
 
         <Input error={errors.state?.message}>
           <Input.Label required>State</Input.Label>
-          <Input.Field placeholder="e.g. Maharashtra" {...register('state')} disabled={isFetchingPincode} />
+          <Input.Field
+            placeholder="e.g. Maharashtra"
+            {...register('state', {
+              onChange: (event) => {
+                setStateEdited(true);
+                return event;
+              },
+            })}
+          />
           <Input.Error />
+          {showStateMismatchWarning && (
+            <p className="text-xs text-warning-600 mt-1">Pincode suggests {state}. Please confirm.</p>
+          )}
         </Input>
 
-        <Input error={errors.pincode?.message}>
-          <Input.Label required>Pincode {isFetchingPincode && <span className="text-2xs text-primary-500 font-normal ml-2 animate-pulse">(Finding city...)</span>}</Input.Label>
+        <Input error={errors.pincode?.message || pincodeError}>
+          <Input.Label required>
+            Pincode {isLoading && <span className="text-2xs text-primary-500 font-normal ml-2 animate-pulse">(Looking up...)</span>}
+          </Input.Label>
           <Input.Field
             type="text"
             inputMode="numeric"
@@ -123,6 +158,9 @@ const Step4AddressDetails = forwardRef((props, ref) => {
             {...register('pincode')}
           />
           <Input.Error />
+          {postOffice && !errors.pincode && !pincodeError && (
+            <p className="text-xs text-gray-500 mt-1">Post Office: {postOffice}</p>
+          )}
         </Input>
       </div>
 
@@ -149,6 +187,77 @@ const Step4AddressDetails = forwardRef((props, ref) => {
           />
         )}
       </div>
+
+      <div className="pt-2">
+        <Controller
+          name="sameAsPermanent"
+          control={control}
+          render={({ field }) => (
+            <Checkbox
+              label="Permanent address is same as current address"
+              description="We will copy your current address into your permanent address details."
+              {...field}
+              checked={field.value}
+            />
+          )}
+        />
+      </div>
+
+      {!sameAsPermanent && (
+        <div className="space-y-6 pt-2 border-t border-surface-200">
+          <h4 className="text-sm font-semibold text-gray-800">Permanent Address</h4>
+          <Input error={errors.permanentAddress?.message}>
+            <Input.Label required>Permanent Address Line 1</Input.Label>
+            <Input.Field placeholder="House/Flat No., Building Name, Street" {...register('permanentAddress')} />
+            <Input.Error />
+          </Input>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <Input error={errors.permanentCity?.message}>
+              <Input.Label required>City</Input.Label>
+              <Input.Field placeholder="e.g. Chennai" {...register('permanentCity')} />
+              <Input.Error />
+            </Input>
+            <Input error={errors.permanentState?.message}>
+              <Input.Label required>State</Input.Label>
+              <Input.Field placeholder="e.g. Tamil Nadu" {...register('permanentState')} />
+              <Input.Error />
+            </Input>
+            <Input error={errors.permanentPincode?.message}>
+              <Input.Label required>Pincode</Input.Label>
+              <Input.Field type="text" inputMode="numeric" maxLength={6} placeholder="e.g. 600001" {...register('permanentPincode')} />
+              <Input.Error />
+            </Input>
+          </div>
+        </div>
+      )}
+
+      {showPreviousAddress && (
+        <div className="space-y-6 pt-4 border-t border-surface-200">
+          <h4 className="text-sm font-semibold text-gray-800">Previous Address (Required for < 1 year)</h4>
+          <Input error={errors.previousAddress?.message}>
+            <Input.Label required>Previous Address Line 1</Input.Label>
+            <Input.Field placeholder="House/Flat No., Building Name, Street" {...register('previousAddress')} />
+            <Input.Error />
+          </Input>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <Input error={errors.previousCity?.message}>
+              <Input.Label required>City</Input.Label>
+              <Input.Field placeholder="e.g. Jaipur" {...register('previousCity')} />
+              <Input.Error />
+            </Input>
+            <Input error={errors.previousState?.message}>
+              <Input.Label required>State</Input.Label>
+              <Input.Field placeholder="e.g. Rajasthan" {...register('previousState')} />
+              <Input.Error />
+            </Input>
+            <Input error={errors.previousPincode?.message}>
+              <Input.Label required>Pincode</Input.Label>
+              <Input.Field type="text" inputMode="numeric" maxLength={6} placeholder="e.g. 302001" {...register('previousPincode')} />
+              <Input.Error />
+            </Input>
+          </div>
+        </div>
+      )}
     </div>
   );
 });

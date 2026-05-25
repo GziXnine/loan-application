@@ -1,0 +1,137 @@
+[
+  {"pincode":"520001","city":"Vijayawada","state":"Andhra Pradesh","postOffice":"Vijayawada H.O."},
+  {"pincode":"530001","city":"Visakhapatnam","state":"Andhra Pradesh","postOffice":"Visakhapatnam H.O."},
+  {"pincode":"515001","city":"Anantapur","state":"Andhra Pradesh","postOffice":"Anantapur H.O."},
+
+  {"pincode":"791001","city":"Itanagar","state":"Arunachal Pradesh","postOffice":"Itanagar H.O."},
+  {"pincode":"791102","city":"Naharlagun","state":"Arunachal Pradesh","postOffice":"Naharlagun H.O."},
+  {"pincode":"792001","city":"Pasighat","state":"Arunachal Pradesh","postOffice":"Pasighat H.O."},
+
+  {"pincode":"781001","city":"Guwahati","state":"Assam","postOffice":"Guwahati G.P.O."},
+  {"pincode":"786001","city":"Dibrugarh","state":"Assam","postOffice":"Dibrugarh H.O."},
+  {"pincode":"788001","city":"Silchar","state":"Assam","postOffice":"Silchar H.O."},
+
+  {"pincode":"800001","city":"Patna","state":"Bihar","postOffice":"Patna G.P.O."},
+  {"pincode":"823001","city":"Gaya","state":"Bihar","postOffice":"Gaya H.O."},
+  {"pincode":"842001","city":"Muzaffarpur","state":"Bihar","postOffice":"Muzaffarpur H.O."},
+
+  {"pincode":"492001","city":"Raipur","state":"Chhattisgarh","postOffice":"Raipur H.O."},
+  {"pincode":"490001","city":"Durg","state":"Chhattisgarh","postOffice":"Durg H.O."},
+  {"pincode":"495001","city":"Bilaspur","state":"Chhattisgarh","postOffice":"Bilaspur H.O."},
+
+  {"pincode":"403001","city":"Panaji","state":"Goa","postOffice":"Panaji H.O."},
+  {"pincode":"403401","city":"Mapusa","state":"Goa","postOffice":"Mapusa H.O."},
+  {"pincode":"403601","city":"Margao","state":"Goa","postOffice":"Margao H.O."},
+
+  {"pincode":"380001","city":"Ahmedabad","state":"Gujarat","postOffice":"Ahmedabad G.P.O."},
+  {"pincode":"395001","city":"Surat","state":"Gujarat","postOffice":"Surat G.P.O."},
+  {"pincode":"390001","city":"Vadodara","state":"Gujarat","postOffice":"Vadodara H.O."},
+
+  {"pincode":"122001","city":"Gurugram","state":"Haryana","postOffice":"Gurugram H.O."},
+  {"pincode":"132001","city":"Karnal","state":"Haryana","postOffice":"Karnal H.O."},
+  {"pincode":"134001","city":"Panchkula","state":"Haryana","postOffice":"Panchkula H.O."},
+
+  {"pincode":"171001","city":"Shimla","state":"Himachal Pradesh","postOffice":"Shimla G.P.O."},
+  {"pincode":"176001","city":"Dharamshala","state":"Himachal Pradesh","postOffice":"Dharamshala H.O."},
+  {"pincode":"173001","city":"Solan","state":"Himachal Pradesh","postOffice":"Solan H.O."},
+
+  {"pincode":"834001","city":"Ranchi","state":"Jharkhand","postOffice":"Ranchi G.P.O."},
+  {"pincode":"831001","city":"Jamshedpur","state":"Jharkhand","postOffice":"Jamshedpur H.O."},
+  {"pincode":"826001","city":"Dhanbad","state":"Jharkhand","postOffice":"Dhanbad H.O."},
+
+  {"pincode":"560001","city":"Bengaluru","state":"Karnataka","postOffice":"Bengaluru G.P.O."},
+  {"pincode":"570001","city":"Mysuru","state":"Karnataka","postOffice":"Mysuru H.O."},
+  {"pincode":"575001","city":"Mangaluru","state":"Karnataka","postOffice":"Mangaluru H.O."},
+
+  {"pincode":"682001","city":"Kochi","state":"Kerala","postOffice":"Kochi H.O."},
+  {"pincode":"695001","city":"Thiruvananthapuram","state":"Kerala","postOffice":"Thiruvananthapuram G.P.O."},
+  {"pincode":"673001","city":"Kozhikode","state":"Kerala","postOffice":"Kozhikode H.O."},
+
+  {"pincode":"462001","city":"Bhopal","state":"Madhya Pradesh","postOffice":"Bhopal G.P.O."},
+  {"pincode":"452001","city":"Indore","state":"Madhya Pradesh","postOffice":"Indore H.O."},
+  {"pincode":"474001","city":"Gwalior","state":"Madhya Pradesh","postOffice":"Gwalior H.O."},
+
+  {"pincode":"400001","city":"Mumbai","state":"Maharashtra","postOffice":"Mumbai G.P.O."},
+  {"pincode":"411001","city":"Pune","state":"Maharashtra","postOffice":"Pune G.P.O."},
+  {"pincode":"440001","city":"Nagpur","state":"Maharashtra","postOffice":"Nagpur G.P.O."},
+
+  {"pincode":"795001","city":"Imphal","state":"Manipur","postOffice":"Imphal H.O."},
+  {"pincode":"795002","city":"Imphal East","state":"Manipur","postOffice":"Porompat H.O."},
+  {"pincode":"795003","city":"Imphal West","state":"Manipur","postOffice":"Langjing H.O."},
+
+  {"pincode":"793001","city":"Shillong","state":"Meghalaya","postOffice":"Shillong G.P.O."},
+  {"pincode":"794001","city":"Tura","state":"Meghalaya","postOffice":"Tura H.O."},
+  {"pincode":"793110","city":"Jowai","state":"Meghalaya","postOffice":"Jowai H.O."},
+
+  {"pincode":"796001","city":"Aizawl","state":"Mizoram","postOffice":"Aizawl G.P.O."},
+  {"pincode":"796005","city":"Aizawl South","state":"Mizoram","postOffice":"Aizawl South H.O."},
+  {"pincode":"796012","city":"Lunglei","state":"Mizoram","postOffice":"Lunglei H.O."},
+
+  {"pincode":"797001","city":"Kohima","state":"Nagaland","postOffice":"Kohima H.O."},
+  {"pincode":"797112","city":"Dimapur","state":"Nagaland","postOffice":"Dimapur H.O."},
+  {"pincode":"798601","city":"Mokokchung","state":"Nagaland","postOffice":"Mokokchung H.O."},
+
+  {"pincode":"751001","city":"Bhubaneswar","state":"Odisha","postOffice":"Bhubaneswar G.P.O."},
+  {"pincode":"753001","city":"Cuttack","state":"Odisha","postOffice":"Cuttack G.P.O."},
+  {"pincode":"768001","city":"Sambalpur","state":"Odisha","postOffice":"Sambalpur H.O."},
+
+  {"pincode":"141001","city":"Ludhiana","state":"Punjab","postOffice":"Ludhiana G.P.O."},
+  {"pincode":"143001","city":"Amritsar","state":"Punjab","postOffice":"Amritsar G.P.O."},
+  {"pincode":"144001","city":"Jalandhar","state":"Punjab","postOffice":"Jalandhar H.O."},
+
+  {"pincode":"302001","city":"Jaipur","state":"Rajasthan","postOffice":"Jaipur G.P.O."},
+  {"pincode":"342001","city":"Jodhpur","state":"Rajasthan","postOffice":"Jodhpur H.O."},
+  {"pincode":"313001","city":"Udaipur","state":"Rajasthan","postOffice":"Udaipur H.O."},
+
+  {"pincode":"737101","city":"Gangtok","state":"Sikkim","postOffice":"Gangtok H.O."},
+  {"pincode":"737102","city":"Gangtok East","state":"Sikkim","postOffice":"Tadong H.O."},
+  {"pincode":"737103","city":"Namchi","state":"Sikkim","postOffice":"Namchi H.O."},
+
+  {"pincode":"600001","city":"Chennai","state":"Tamil Nadu","postOffice":"Chennai G.P.O."},
+  {"pincode":"625001","city":"Madurai","state":"Tamil Nadu","postOffice":"Madurai H.O."},
+  {"pincode":"641001","city":"Coimbatore","state":"Tamil Nadu","postOffice":"Coimbatore H.O."},
+
+  {"pincode":"500001","city":"Hyderabad","state":"Telangana","postOffice":"Hyderabad G.P.O."},
+  {"pincode":"506001","city":"Warangal","state":"Telangana","postOffice":"Warangal H.O."},
+  {"pincode":"505001","city":"Karimnagar","state":"Telangana","postOffice":"Karimnagar H.O."},
+
+  {"pincode":"799001","city":"Agartala","state":"Tripura","postOffice":"Agartala G.P.O."},
+  {"pincode":"799004","city":"Agartala North","state":"Tripura","postOffice":"Barjala H.O."},
+  {"pincode":"799009","city":"Udaipur","state":"Tripura","postOffice":"Radhakishorepur H.O."},
+
+  {"pincode":"226001","city":"Lucknow","state":"Uttar Pradesh","postOffice":"Lucknow G.P.O."},
+  {"pincode":"201001","city":"Ghaziabad","state":"Uttar Pradesh","postOffice":"Ghaziabad H.O."},
+  {"pincode":"282001","city":"Agra","state":"Uttar Pradesh","postOffice":"Agra H.O."},
+
+  {"pincode":"248001","city":"Dehradun","state":"Uttarakhand","postOffice":"Dehradun H.O."},
+  {"pincode":"263001","city":"Haldwani","state":"Uttarakhand","postOffice":"Haldwani H.O."},
+  {"pincode":"249401","city":"Haridwar","state":"Uttarakhand","postOffice":"Haridwar H.O."},
+
+  {"pincode":"700001","city":"Kolkata","state":"West Bengal","postOffice":"Kolkata G.P.O."},
+  {"pincode":"713101","city":"Bardhaman","state":"West Bengal","postOffice":"Bardhaman H.O."},
+  {"pincode":"734001","city":"Siliguri","state":"West Bengal","postOffice":"Siliguri H.O."},
+
+  {"pincode":"744101","city":"Port Blair","state":"Andaman and Nicobar Islands","postOffice":"Port Blair H.O."},
+  {"pincode":"744102","city":"Car Nicobar","state":"Andaman and Nicobar Islands","postOffice":"Car Nicobar H.O."},
+
+  {"pincode":"160017","city":"Chandigarh","state":"Chandigarh","postOffice":"Chandigarh G.P.O."},
+  {"pincode":"160022","city":"Chandigarh Sector 22","state":"Chandigarh","postOffice":"Sector 22 H.O."},
+
+  {"pincode":"396210","city":"Daman","state":"Dadra and Nagar Haveli and Daman and Diu","postOffice":"Daman H.O."},
+  {"pincode":"396230","city":"Silvassa","state":"Dadra and Nagar Haveli and Daman and Diu","postOffice":"Silvassa H.O."},
+
+  {"pincode":"110001","city":"New Delhi","state":"Delhi","postOffice":"New Delhi G.P.O."},
+  {"pincode":"110020","city":"Okhla","state":"Delhi","postOffice":"Okhla Industrial Area H.O."},
+
+  {"pincode":"190001","city":"Srinagar","state":"Jammu and Kashmir","postOffice":"Srinagar G.P.O."},
+  {"pincode":"180001","city":"Jammu","state":"Jammu and Kashmir","postOffice":"Jammu G.P.O."},
+
+  {"pincode":"194101","city":"Leh","state":"Ladakh","postOffice":"Leh H.O."},
+  {"pincode":"194103","city":"Kargil","state":"Ladakh","postOffice":"Kargil H.O."},
+
+  {"pincode":"682555","city":"Kavaratti","state":"Lakshadweep","postOffice":"Kavaratti H.O."},
+  {"pincode":"682556","city":"Agatti","state":"Lakshadweep","postOffice":"Agatti H.O."},
+
+  {"pincode":"605001","city":"Puducherry","state":"Puducherry","postOffice":"Puducherry H.O."},
+  {"pincode":"605008","city":"Puducherry South","state":"Puducherry","postOffice":"Mudaliarpet H.O."}
+]

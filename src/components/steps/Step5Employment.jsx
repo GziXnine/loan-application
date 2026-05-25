@@ -1,7 +1,7 @@
-import { forwardRef, useImperativeHandle } from 'react';
+import { forwardRef, useImperativeHandle, useMemo } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { step5Schema } from '../../utils/validationSchemas';
+import { buildStep5Schema } from '../../utils/validationSchemas';
 import useLoanStore from '../../store/loanStore';
 import RadioGroup from '../common/RadioGroup';
 import Input from '../common/Input';
@@ -10,6 +10,12 @@ import CurrencyInput from '../common/CurrencyInput';
 const Step5Employment = forwardRef((props, ref) => {
   const stepData = useLoanStore((state) => state.getStepData(5));
   const updateStepData = useLoanStore((state) => state.updateStepData);
+  const loanType = useLoanStore((state) => state.formData.step1.loanType);
+
+  const resolver = useMemo(
+    () => zodResolver(buildStep5Schema(loanType)),
+    [loanType]
+  );
 
   const {
     register,
@@ -19,7 +25,7 @@ const Step5Employment = forwardRef((props, ref) => {
     watch,
     formState: { errors },
   } = useForm({
-    resolver: zodResolver(step5Schema),
+    resolver,
     defaultValues: stepData,
     mode: 'onChange',
   });
@@ -38,7 +44,8 @@ const Step5Employment = forwardRef((props, ref) => {
 
   const employmentOptions = [
     { value: 'salaried', label: 'Salaried', icon: '👔', description: 'Employed by a company' },
-    { value: 'self_employed', label: 'Self-Employed', icon: '💼', description: 'Business owner or freelancer' },
+    { value: 'self_employed', label: 'Self-Employed', icon: '💼', description: 'Freelancer or consultant' },
+    { value: 'business_owner', label: 'Business Owner', icon: '🏢', description: 'Registered business entity' },
   ];
 
   return (
@@ -66,6 +73,12 @@ const Step5Employment = forwardRef((props, ref) => {
           />
         )}
       />
+
+      {loanType === 'business' && employmentType === 'salaried' && (
+        <div className="border border-warning-200 bg-warning-50 text-warning-700 rounded-xl p-4 text-sm">
+          Business loans require Self-Employed or Business Owner status.
+        </div>
+      )}
 
       {employmentType === 'salaried' && (
         <div className="space-y-6 animate-fade-in pt-4">
@@ -165,6 +178,73 @@ const Step5Employment = forwardRef((props, ref) => {
             
             <Input error={errors.gstNumber?.message}>
               <Input.Label>GST Number (Optional)</Input.Label>
+              <Input.Field placeholder="15-digit GSTIN" {...register('gstNumber')} />
+              <Input.Error />
+            </Input>
+          </div>
+        </div>
+      )}
+
+      {employmentType === 'business_owner' && (
+        <div className="space-y-6 animate-fade-in pt-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <Input error={errors.businessName?.message}>
+              <Input.Label required>Business Name</Input.Label>
+              <Input.Field placeholder="e.g. LendSwift Retail Pvt Ltd" {...register('businessName')} />
+              <Input.Error />
+            </Input>
+
+            <Input error={errors.businessType?.message}>
+              <Input.Label required>Business Type</Input.Label>
+              <Input.Field placeholder="e.g. Retail, Manufacturing, Services" {...register('businessType')} />
+              <Input.Error />
+            </Input>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <Input error={errors.businessVintage?.message}>
+              <Input.Label required>Business Vintage (Years)</Input.Label>
+              <Input.Field type="number" min={0} placeholder="e.g. 5" {...register('businessVintage')} />
+              <Input.Error />
+            </Input>
+
+            <Controller
+              name="annualTurnover"
+              control={control}
+              render={({ field }) => (
+                <CurrencyInput
+                  label="Annual Turnover"
+                  placeholder="e.g. 1,50,00,000"
+                  required
+                  error={errors.annualTurnover?.message}
+                  {...field}
+                />
+              )}
+            />
+          </div>
+
+          <Controller
+            name="monthlyProfit"
+            control={control}
+            render={({ field }) => (
+              <CurrencyInput
+                label="Net Monthly Profit (Optional)"
+                placeholder="e.g. 2,50,000"
+                error={errors.monthlyProfit?.message}
+                {...field}
+              />
+            )}
+          />
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <Input error={errors.companyRegistrationNumber?.message}>
+              <Input.Label required>Company Registration Number</Input.Label>
+              <Input.Field placeholder="e.g. U74999MH..." {...register('companyRegistrationNumber')} />
+              <Input.Error />
+            </Input>
+
+            <Input error={errors.gstNumber?.message}>
+              <Input.Label required>GST Number</Input.Label>
               <Input.Field placeholder="15-digit GSTIN" {...register('gstNumber')} />
               <Input.Error />
             </Input>

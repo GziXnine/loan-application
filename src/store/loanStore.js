@@ -54,6 +54,7 @@ const initialFormData = {
     isPanVerified: false,
     aadhaarNumber: '',
     isAadhaarVerified: false,
+    aadhaarConsent: false,
   },
   // Step 4: Address Details
   step4: {
@@ -64,6 +65,15 @@ const initialFormData = {
     pincode: '',
     yearsAtCurrentAddress: '',
     rentAmount: '',
+    sameAsPermanent: true,
+    permanentAddress: '',
+    permanentCity: '',
+    permanentState: '',
+    permanentPincode: '',
+    previousAddress: '',
+    previousCity: '',
+    previousState: '',
+    previousPincode: '',
   },
   // Step 5: Employment
   step5: {
@@ -91,6 +101,10 @@ const initialFormData = {
     coapplicantIncome: '',
     coapplicantEmail: '',
     coapplicantMobile: '',
+    coapplicantPan: '',
+    isCoapplicantPanVerified: false,
+    coapplicantConsent: false,
+    coapplicantSignature: '',
   },
   // Step 7: Documents
   step7: {
@@ -98,13 +112,13 @@ const initialFormData = {
     addressProof: [],
     incomeProof: [],
     additionalDocs: [],
+    signature: '',
   },
   // Step 8: Review & Submit
   step8: {
     termsAccepted: false,
     kfsAccepted: false,
     consentToDataProcessing: false,
-    signature: null,
   },
 };
 

@@ -1,6 +1,30 @@
 import { z } from 'zod';
+import { validateAadhaar, validateGST, validatePAN } from './validators';
 
-export const step1Schema = z.object({
+const loanConstraintsByType = {
+  personal: { minAmount: 10000, maxAmount: 2000000, minTenure: 6, maxTenure: 60 },
+  home: { minAmount: 500000, maxAmount: 50000000, minTenure: 60, maxTenure: 360 },
+  business: { minAmount: 100000, maxAmount: 20000000, minTenure: 12, maxTenure: 120 },
+};
+
+const getLoanConstraints = (loanType) => (
+  loanConstraintsByType[loanType] || { minAmount: 10000, maxAmount: 50000000, minTenure: 6, maxTenure: 360 }
+);
+
+const computeAge = (dateString) => {
+  if (!dateString) return null;
+  const dob = new Date(dateString);
+  if (Number.isNaN(dob.getTime())) return null;
+  const today = new Date();
+  let age = today.getFullYear() - dob.getFullYear();
+  const m = today.getMonth() - dob.getMonth();
+  if (m < 0 || (m === 0 && today.getDate() < dob.getDate())) {
+    age -= 1;
+  }
+  return age;
+};
+
+export const buildStep1Schema = (dateOfBirth) => z.object({
   loanType: z.enum(['personal', 'home', 'business'], {
     required_error: 'Please select a loan type',
   }),
@@ -13,20 +37,42 @@ export const step1Schema = z.object({
     required_error: 'Please select a tenure',
   }).min(6, 'Minimum tenure is 6 months')
     .max(360, 'Maximum tenure is 360 months'),
-  loanPurpose: z.string().min(5, 'Please provide a valid purpose (min 5 characters)'),
+  loanPurpose: z.string().min(2, 'Please select a valid purpose'),
+}).superRefine((data, ctx) => {
+  const { minAmount, maxAmount, minTenure, maxTenure } = getLoanConstraints(data.loanType);
+  if (data.loanAmount < minAmount || data.loanAmount > maxAmount) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      message: `Loan amount must be between ₹${minAmount.toLocaleString('en-IN')} and ₹${maxAmount.toLocaleString('en-IN')}`,
+      path: ['loanAmount'],
+    });
+  }
+  if (data.loanTenure < minTenure || data.loanTenure > maxTenure) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      message: `Tenure must be between ${minTenure} and ${maxTenure} months`,
+      path: ['loanTenure'],
+    });
+  }
+
+  const age = computeAge(dateOfBirth);
+  if (age !== null) {
+    const tenureYears = data.loanTenure / 12;
+    if (age + tenureYears > 65) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: 'Tenure exceeds the maximum allowed age of 65 years',
+        path: ['loanTenure'],
+      });
+    }
+  }
 });
 
 export const step2Schema = z.object({
   fullName: z.string().min(3, 'Full name must be at least 3 characters').regex(/^[A-Za-z\s]+$/, 'Only alphabets are allowed'),
   dateOfBirth: z.string().refine((date) => {
-    const dob = new Date(date);
-    const today = new Date();
-    let age = today.getFullYear() - dob.getFullYear();
-    const m = today.getMonth() - dob.getMonth();
-    if (m < 0 || (m === 0 && today.getDate() < dob.getDate())) {
-      age--;
-    }
-    return age >= 18 && age <= 65;
+    const age = computeAge(date);
+    return age !== null && age >= 18 && age <= 65;
   }, 'Applicant must be between 18 and 65 years old'),
   gender: z.enum(['male', 'female', 'other'], {
     required_error: 'Please select your gender',
@@ -37,18 +83,31 @@ export const step2Schema = z.object({
   maritalStatus: z.enum(['single', 'married', 'divorced', 'widowed'], {
     required_error: 'Please select your marital status',
   }),
+}).superRefine((data, ctx) => {
+  if (data.alternateMobile && data.alternateMobile === data.mobileNumber) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      message: 'Alternate mobile number must be different from primary number',
+      path: ['alternateMobile'],
+    });
+  }
 });
 
 export const step3Schema = z.object({
-  panNumber: z.string().regex(/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/, 'Invalid PAN format (e.g. ABCDE1234F)'),
+  panNumber: z.string().refine((val) => validatePAN(val), 'Invalid PAN format (e.g. ABCDE1234F)'),
   isPanVerified: z.boolean().refine((val) => val === true, {
     message: 'Please verify your PAN to proceed',
   }),
-  aadhaarNumber: z.string().regex(/^\d{12}$/, 'Aadhaar must be exactly 12 digits'),
+  aadhaarNumber: z.string().refine((val) => validateAadhaar(val), 'Invalid Aadhaar number'),
   isAadhaarVerified: z.boolean().refine((val) => val === true, {
     message: 'Please verify your Aadhaar to proceed',
   }),
+  aadhaarConsent: z.boolean().refine((val) => val === true, {
+    message: 'Please provide consent to proceed',
+  }),
 });
+
+const pincodeSchema = z.string().regex(/^[1-9][0-9]{5}$/, 'Invalid Indian pincode');
 
 export const step4Schema = z.object({
   residenceType: z.enum(['owned', 'rented', 'company_provided', 'family_owned'], {
@@ -57,79 +116,120 @@ export const step4Schema = z.object({
   currentAddress: z.string().min(10, 'Address must be at least 10 characters').max(200, 'Address is too long'),
   city: z.string().min(2, 'City name is required'),
   state: z.string().min(2, 'State name is required'),
-  pincode: z.string().regex(/^[1-9][0-9]{5}$/, 'Invalid Indian pincode'),
-  yearsAtCurrentAddress: z.coerce.number().min(0, 'Cannot be negative').max(100, 'Invalid years'),
+  pincode: pincodeSchema,
+  yearsAtCurrentAddress: z.preprocess(
+    (val) => (val === '' || val === null || val === undefined ? undefined : val),
+    z.coerce.number({ required_error: 'Years at current address is required' })
+      .min(0, 'Cannot be negative')
+      .max(100, 'Invalid years')
+  ),
   rentAmount: z.coerce.number().optional().or(z.literal('')),
-}).refine(
-  (data) => {
-    if (data.residenceType === 'rented' && (!data.rentAmount || data.rentAmount <= 0)) {
-      return false;
-    }
-    return true;
-  },
-  {
-    message: 'Rent amount is required for rented residence',
-    path: ['rentAmount'],
-  }
-);
-
-export const step5Schema = z.object({
-  employmentType: z.enum(['salaried', 'self_employed'], {
-    required_error: 'Please select employment type',
-  }),
-  // Salaried fields
-  companyName: z.string().optional(),
-  designation: z.string().optional(),
-  workExperience: z.coerce.number().optional(),
-  monthlyIncome: z.coerce.number().optional(),
-  // Self-employed fields
-  businessName: z.string().optional(),
-  businessType: z.string().optional(),
-  businessVintage: z.coerce.number().optional(),
-  annualTurnover: z.coerce.number().optional(),
-  monthlyProfit: z.coerce.number().optional(),
-  companyRegistrationNumber: z.string().optional(),
-  gstNumber: z.string().optional(),
+  sameAsPermanent: z.boolean(),
+  permanentAddress: z.string().optional().or(z.literal('')),
+  permanentCity: z.string().optional().or(z.literal('')),
+  permanentState: z.string().optional().or(z.literal('')),
+  permanentPincode: z.string().optional().or(z.literal('')),
+  previousAddress: z.string().optional().or(z.literal('')),
+  previousCity: z.string().optional().or(z.literal('')),
+  previousState: z.string().optional().or(z.literal('')),
+  previousPincode: z.string().optional().or(z.literal('')),
 }).superRefine((data, ctx) => {
-  if (data.employmentType === 'salaried') {
-    if (!data.companyName || data.companyName.length < 2) {
-      ctx.addIssue({ code: z.ZodIssueCode.custom, message: 'Company name is required', path: ['companyName'] });
+  if (data.residenceType === 'rented' && (!data.rentAmount || data.rentAmount <= 0)) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      message: 'Rent amount is required for rented residence',
+      path: ['rentAmount'],
+    });
+  }
+
+  if (!data.sameAsPermanent) {
+    if (!data.permanentAddress || data.permanentAddress.length < 10) {
+      ctx.addIssue({ code: z.ZodIssueCode.custom, message: 'Permanent address is required', path: ['permanentAddress'] });
     }
-    if (!data.designation || data.designation.length < 2) {
-      ctx.addIssue({ code: z.ZodIssueCode.custom, message: 'Designation is required', path: ['designation'] });
+    if (!data.permanentCity || data.permanentCity.length < 2) {
+      ctx.addIssue({ code: z.ZodIssueCode.custom, message: 'Permanent city is required', path: ['permanentCity'] });
     }
-    if (data.workExperience === undefined || data.workExperience < 0) {
-      ctx.addIssue({ code: z.ZodIssueCode.custom, message: 'Valid experience is required', path: ['workExperience'] });
+    if (!data.permanentState || data.permanentState.length < 2) {
+      ctx.addIssue({ code: z.ZodIssueCode.custom, message: 'Permanent state is required', path: ['permanentState'] });
     }
-    if (!data.monthlyIncome || data.monthlyIncome <= 0) {
-      ctx.addIssue({ code: z.ZodIssueCode.custom, message: 'Monthly income is required', path: ['monthlyIncome'] });
+    if (!data.permanentPincode || !pincodeSchema.safeParse(data.permanentPincode).success) {
+      ctx.addIssue({ code: z.ZodIssueCode.custom, message: 'Permanent pincode is invalid', path: ['permanentPincode'] });
     }
-  } else if (data.employmentType === 'self_employed') {
-    if (!data.businessName || data.businessName.length < 2) {
-      ctx.addIssue({ code: z.ZodIssueCode.custom, message: 'Business name is required', path: ['businessName'] });
+  }
+
+  if (Number(data.yearsAtCurrentAddress) < 1) {
+    if (!data.previousAddress || data.previousAddress.length < 10) {
+      ctx.addIssue({ code: z.ZodIssueCode.custom, message: 'Previous address is required', path: ['previousAddress'] });
     }
-    if (!data.businessType) {
-      ctx.addIssue({ code: z.ZodIssueCode.custom, message: 'Business type is required', path: ['businessType'] });
+    if (!data.previousCity || data.previousCity.length < 2) {
+      ctx.addIssue({ code: z.ZodIssueCode.custom, message: 'Previous city is required', path: ['previousCity'] });
     }
-    if (data.businessVintage === undefined || data.businessVintage < 0) {
-      ctx.addIssue({ code: z.ZodIssueCode.custom, message: 'Valid vintage is required', path: ['businessVintage'] });
+    if (!data.previousState || data.previousState.length < 2) {
+      ctx.addIssue({ code: z.ZodIssueCode.custom, message: 'Previous state is required', path: ['previousState'] });
     }
-    if (!data.annualTurnover || data.annualTurnover <= 0) {
-      ctx.addIssue({ code: z.ZodIssueCode.custom, message: 'Annual turnover is required', path: ['annualTurnover'] });
+    if (!data.previousPincode || !pincodeSchema.safeParse(data.previousPincode).success) {
+      ctx.addIssue({ code: z.ZodIssueCode.custom, message: 'Previous pincode is invalid', path: ['previousPincode'] });
     }
-    if (data.gstNumber && !/^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/.test(data.gstNumber)) {
-      ctx.addIssue({ code: z.ZodIssueCode.custom, message: 'Invalid GST format', path: ['gstNumber'] });
-    }
+  }
+});
+
+const salariedSchema = z.object({
+  employmentType: z.literal('salaried'),
+  companyName: z.string().min(2, 'Company name is required'),
+  designation: z.string().min(2, 'Designation is required'),
+  workExperience: z.coerce.number().min(0, 'Valid experience is required'),
+  monthlyIncome: z.coerce.number().min(1, 'Monthly income is required'),
+});
+
+const selfEmployedSchema = z.object({
+  employmentType: z.literal('self_employed'),
+  businessName: z.string().min(2, 'Business name is required'),
+  businessType: z.string().min(2, 'Business type is required'),
+  businessVintage: z.coerce.number().min(0, 'Valid vintage is required'),
+  annualTurnover: z.coerce.number().min(1, 'Annual turnover is required'),
+  monthlyProfit: z.coerce.number().optional().or(z.literal('')),
+  companyRegistrationNumber: z.string().optional().or(z.literal('')),
+  gstNumber: z.string().optional().or(z.literal('')).refine((val) => !val || validateGST(val), 'Invalid GST format'),
+});
+
+const businessOwnerSchema = z.object({
+  employmentType: z.literal('business_owner'),
+  businessName: z.string().min(2, 'Business name is required'),
+  businessType: z.string().min(2, 'Business type is required'),
+  businessVintage: z.coerce.number().min(0, 'Valid vintage is required'),
+  annualTurnover: z.coerce.number().min(1, 'Annual turnover is required'),
+  monthlyProfit: z.coerce.number().optional().or(z.literal('')),
+  companyRegistrationNumber: z.string().min(6, 'Company registration number is required'),
+  gstNumber: z.string().min(15, 'GST number is required').refine((val) => validateGST(val), 'Invalid GST format'),
+});
+
+const baseEmploymentSchema = z.discriminatedUnion('employmentType', [
+  salariedSchema,
+  selfEmployedSchema,
+  businessOwnerSchema,
+]);
+
+export const buildStep5Schema = (loanType) => baseEmploymentSchema.superRefine((data, ctx) => {
+  if (loanType === 'business' && data.employmentType === 'salaried') {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      message: 'Business loans require Self-Employed or Business Owner status',
+      path: ['employmentType'],
+    });
   }
 });
 
 export const step6Schema = z.object({
   hasCoapplicant: z.boolean(),
-  coapplicantName: z.string().optional(),
-  coapplicantRelationship: z.string().optional(),
-  coapplicantIncome: z.coerce.number().optional(),
-  coapplicantEmail: z.string().optional(),
-  coapplicantMobile: z.string().optional(),
+  coapplicantName: z.string().optional().or(z.literal('')),
+  coapplicantRelationship: z.string().optional().or(z.literal('')),
+  coapplicantIncome: z.coerce.number().optional().or(z.literal('')),
+  coapplicantEmail: z.string().optional().or(z.literal('')),
+  coapplicantMobile: z.string().optional().or(z.literal('')),
+  coapplicantPan: z.string().optional().or(z.literal('')),
+  isCoapplicantPanVerified: z.boolean().optional(),
+  coapplicantConsent: z.boolean().optional(),
+  coapplicantSignature: z.string().optional().or(z.literal('')),
 }).superRefine((data, ctx) => {
   if (data.hasCoapplicant) {
     if (!data.coapplicantName || data.coapplicantName.length < 3) {
@@ -147,14 +247,29 @@ export const step6Schema = z.object({
     if (!data.coapplicantMobile || !/^[6-9]\d{9}$/.test(data.coapplicantMobile)) {
       ctx.addIssue({ code: z.ZodIssueCode.custom, message: 'Valid 10-digit mobile is required', path: ['coapplicantMobile'] });
     }
+    if (!data.coapplicantPan || !validatePAN(data.coapplicantPan)) {
+      ctx.addIssue({ code: z.ZodIssueCode.custom, message: 'Valid PAN is required', path: ['coapplicantPan'] });
+    }
+    if (data.isCoapplicantPanVerified !== true) {
+      ctx.addIssue({ code: z.ZodIssueCode.custom, message: 'Please verify co-applicant PAN', path: ['isCoapplicantPanVerified'] });
+    }
+    if (data.coapplicantConsent !== true) {
+      ctx.addIssue({ code: z.ZodIssueCode.custom, message: 'Consent is required', path: ['coapplicantConsent'] });
+    }
+    if (!data.coapplicantSignature || data.coapplicantSignature.length < 10) {
+      ctx.addIssue({ code: z.ZodIssueCode.custom, message: 'Co-applicant signature is required', path: ['coapplicantSignature'] });
+    }
   }
 });
 
 export const step7Schema = z.object({
-  identityProof: z.array(z.any()).min(1, 'Identity proof is required'),
-  addressProof: z.array(z.any()).min(1, 'Address proof is required'),
-  incomeProof: z.array(z.any()).min(1, 'Income proof is required'),
+  identityProof: z.array(z.any()).optional(),
+  addressProof: z.array(z.any()).optional(),
+  incomeProof: z.array(z.any()).optional(),
   additionalDocs: z.array(z.any()).optional(),
+  signature: z.string({
+    required_error: 'Signature is required',
+  }).min(10, 'Signature is required'),
 });
 
 export const step8Schema = z.object({
@@ -167,7 +282,4 @@ export const step8Schema = z.object({
   consentToDataProcessing: z.boolean().refine((val) => val === true, {
     message: 'You must consent to data processing',
   }),
-  signature: z.string({
-    required_error: 'Signature is required',
-  }).min(10, 'Signature is required'), // Data URL will be much longer than 10 chars
 });

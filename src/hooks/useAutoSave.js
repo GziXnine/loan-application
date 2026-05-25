@@ -48,51 +48,18 @@ export default function useAutoSave() {
     isDirty,
     autoSaveEnabled,
     setLastSavedAt,
-    setShowResumeModal,
   } = useLoanStore();
 
   const isInitialMount = useRef(true);
 
-  // 1. Check for existing saved state on mount
-  useEffect(() => {
-    const checkSavedState = async () => {
-      try {
-        const savedData = localStorage.getItem(STORAGE_KEY);
-        if (!savedData) return;
-
-        const parsedData = JSON.parse(savedData);
-        
-        // Check TTL
-        const savedTime = new Date(parsedData.timestamp).getTime();
-        const now = new Date().getTime();
-        const hoursElapsed = (now - savedTime) / (1000 * 60 * 60);
-
-        if (hoursElapsed > TTL_HOURS) {
-          console.log('Saved state expired TTL. Purging.');
-          localStorage.removeItem(STORAGE_KEY);
-          return;
-        }
-
-        // We have a valid, unexpired save. We don't decrypt until the user
-        // chooses to resume, so we just trigger the modal here.
-        setShowResumeModal(true);
-      } catch (err) {
-        console.error('Failed to parse saved state metadata', err);
-        localStorage.removeItem(STORAGE_KEY);
-      }
-    };
-
-    checkSavedState();
-  }, [setShowResumeModal]);
-
-  // 2. The core save function (now uses the exported function)
+  // 1. The core save function (now uses the exported function)
   const triggerSave = useCallback(() => {
     if (isDirty) {
       triggerManualSave();
     }
   }, [isDirty]);
 
-  // 3. Set up the 30-second interval auto-save (only if dirty)
+  // 2. Set up the 30-second interval auto-save (only if dirty)
   useEffect(() => {
     if (isInitialMount.current) {
       isInitialMount.current = false;
@@ -108,7 +75,7 @@ export default function useAutoSave() {
     return () => clearInterval(intervalId);
   }, [isDirty, autoSaveEnabled, triggerSave]);
 
-  // 4. Also save on beforeunload (when user closes tab)
+  // 3. Also save on beforeunload (when user closes tab)
   useEffect(() => {
     const handleBeforeUnload = (e) => {
       if (isDirty && autoSaveEnabled) {

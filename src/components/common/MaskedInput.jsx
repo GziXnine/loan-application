@@ -1,5 +1,6 @@
 import { forwardRef, useId, useState, useCallback } from 'react';
 import clsx from 'clsx';
+import ErrorMessage from './ErrorMessage';
 
 const MaskedInput = forwardRef(function MaskedInput(
   {
@@ -21,6 +22,8 @@ const MaskedInput = forwardRef(function MaskedInput(
 ) {
   const generatedId = useId();
   const inputId = customId || `masked-${name || generatedId}`;
+  const errorId = `${inputId}-error`;
+  const helpId = `${inputId}-help`;
   const [isMasked, setIsMasked] = useState(true);
 
   const formatValue = useCallback((val) => {
@@ -73,6 +76,10 @@ const MaskedInput = forwardRef(function MaskedInput(
           placeholder={placeholder}
           disabled={disabled}
           required={required}
+          aria-invalid={error ? 'true' : undefined}
+          aria-describedby={
+            [error && errorId, helpText && helpId].filter(Boolean).join(' ') || undefined
+          }
           className={clsx('form-input pr-12', { 'form-input-error': error })}
           {...rest}
         />
@@ -85,8 +92,8 @@ const MaskedInput = forwardRef(function MaskedInput(
           {isMasked ? '👁️' : '🙈'}
         </button>
       </div>
-      {error && <p className="text-xs text-error-500 mt-1.5" role="alert">{error}</p>}
-      {helpText && !error && <p className="form-help-text">{helpText}</p>}
+      <ErrorMessage id={errorId} message={error} />
+      {helpText && !error && <p id={helpId} className="form-help-text">{helpText}</p>}
     </div>
   );
 });

@@ -24,6 +24,11 @@
     @apply font-sans text-gray-800 bg-surface-50;
     min-height: 100vh;
     line-height: 1.6;
+    background-image:
+      radial-gradient(1200px 600px at 10% -10%, rgba(31, 78, 121, 0.12), transparent 60%),
+      radial-gradient(900px 500px at 90% 0%, rgba(39, 174, 96, 0.1), transparent 55%),
+      radial-gradient(600px 400px at 40% 110%, rgba(243, 156, 18, 0.1), transparent 60%);
+    background-attachment: fixed;
   }
 
   h1, h2, h3, h4, h5, h6 {

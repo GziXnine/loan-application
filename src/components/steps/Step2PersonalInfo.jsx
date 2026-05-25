@@ -99,6 +99,7 @@ const Step2PersonalInfo = forwardRef((props, ref) => {
           label="Marital Status"
           options={maritalStatusOptions}
           required
+          variant="custom"
           error={errors.maritalStatus?.message}
           {...register('maritalStatus')}
         />

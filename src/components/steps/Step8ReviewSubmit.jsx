@@ -1,23 +1,21 @@
-import { forwardRef, useImperativeHandle, useRef } from 'react';
+import { forwardRef, useImperativeHandle } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { step8Schema } from '../../utils/validationSchemas';
 import useLoanStore from '../../store/loanStore';
 import Checkbox from '../common/Checkbox';
-import SignatureCanvas from '../common/SignatureCanvas';
 
 const Step8ReviewSubmit = forwardRef((props, ref) => {
   const stepData = useLoanStore((state) => state.getStepData(8));
   const updateStepData = useLoanStore((state) => state.updateStepData);
   const formData = useLoanStore((state) => state.formData);
 
-  const signatureRef = useRef(null);
-
   const {
     control,
     trigger,
     getValues,
-    setValue,
+    setError,
+    clearErrors,
     formState: { errors },
   } = useForm({
     resolver: zodResolver(step8Schema),
@@ -25,19 +23,54 @@ const Step8ReviewSubmit = forwardRef((props, ref) => {
     mode: 'onChange',
   });
 
+  function checkEmiAffordability() {
+    const loanAmount = Number(formData.step1.loanAmount) || 0;
+    const tenureMonths = Number(formData.step1.loanTenure) || 0;
+    const employmentType = formData.step5.employmentType;
+
+    let monthlyIncome = 0;
+    if (employmentType === 'salaried') {
+      monthlyIncome = Number(formData.step5.monthlyIncome) || 0;
+    } else {
+      monthlyIncome = Number(formData.step5.monthlyProfit) || 0;
+      if (!monthlyIncome) {
+        monthlyIncome = (Number(formData.step5.annualTurnover) || 0) / 12;
+      }
+    }
+
+    if (!loanAmount || !tenureMonths || !monthlyIncome) {
+      return { isAffordable: true, message: '' };
+    }
+
+    // Assumed baseline interest rate for affordability checks.
+    const annualRate = 0.12;
+    const monthlyRate = annualRate / 12;
+    const emi = (loanAmount * monthlyRate * Math.pow(1 + monthlyRate, tenureMonths)) /
+      (Math.pow(1 + monthlyRate, tenureMonths) - 1);
+
+    if (emi > monthlyIncome * 0.5) {
+      return {
+        isAffordable: false,
+        message: 'EMI exceeds 50% of your monthly income. Please reduce loan amount or tenure.',
+      };
+    }
+
+    return { isAffordable: true, message: '' };
+  }
+
   useImperativeHandle(ref, () => ({
     validate: async () => {
-      // Get latest signature directly from canvas ref
-      if (signatureRef.current) {
-        const sigData = signatureRef.current.getSignature();
-        setValue('signature', sigData || '', { shouldValidate: true });
-      }
-
       const isValid = await trigger();
-      if (isValid) {
+      const emiCheck = checkEmiAffordability();
+      if (!emiCheck.isAffordable) {
+        setError('root', { type: 'manual', message: emiCheck.message });
+      } else {
+        clearErrors('root');
+      }
+      if (isValid && emiCheck.isAffordable) {
         updateStepData(8, getValues());
       }
-      return isValid;
+      return isValid && emiCheck.isAffordable;
     },
   }));
 
@@ -84,6 +117,11 @@ const Step8ReviewSubmit = forwardRef((props, ref) => {
       {/* Consents & Agreements */}
       <div className="space-y-4">
         <h4 className="font-heading font-semibold text-gray-900">Declarations & Consent</h4>
+        {errors.root?.message && (
+          <div className="border border-error-200 bg-error-50 text-error-700 rounded-xl p-3 text-sm">
+            {errors.root.message}
+          </div>
+        )}
         
         <Controller
           name="kfsAccepted"
@@ -128,27 +166,6 @@ const Step8ReviewSubmit = forwardRef((props, ref) => {
             />
           )}
         />
-      </div>
-
-      {/* E-Signature */}
-      <div className="pt-4 border-t border-surface-200">
-        <h4 className="font-heading font-semibold text-gray-900 mb-4">Digital Signature</h4>
-        <Controller
-          name="signature"
-          control={control}
-          render={({ field }) => (
-            <SignatureCanvas
-              ref={signatureRef}
-              label="Please sign in the box below"
-              required
-              error={errors.signature?.message}
-              onEnd={(data) => field.onChange(data)}
-            />
-          )}
-        />
-        <p className="text-xs text-gray-500 mt-2">
-          By signing, I confirm that all the information provided is accurate and true to the best of my knowledge.
-        </p>
       </div>
 
     </div>

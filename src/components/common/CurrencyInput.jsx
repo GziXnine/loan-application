@@ -1,5 +1,6 @@
 import { forwardRef, useId, useState, useCallback } from 'react';
 import clsx from 'clsx';
+import ErrorMessage from './ErrorMessage';
 
 const CurrencyInput = forwardRef(function CurrencyInput(
   {
@@ -80,9 +81,7 @@ const CurrencyInput = forwardRef(function CurrencyInput(
           {...rest}
         />
       </div>
-      {error && (
-        <p id={errorId} className="text-xs text-error-500 mt-1.5" role="alert">{error}</p>
-      )}
+      <ErrorMessage id={errorId} message={error} />
       {helpText && !error && (
         <p id={helpId} className="form-help-text">{helpText}</p>
       )}

@@ -1,8 +1,8 @@
-import { lazy, Suspense } from 'react';
 import Wizard from './components/wizard/Wizard';
 import ResumeModal from './components/wizard/ResumeModal';
 import useLoanStore from './store/loanStore';
 import useAutoSave, { clearSavedState } from './hooks/useAutoSave';
+import useFormPersistence from './hooks/useFormPersistence';
 
 /**
  * LendSwift Loan Application
@@ -15,6 +15,7 @@ function App() {
   
   // Initialize auto-save background loop
   useAutoSave();
+  useFormPersistence();
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-surface-50 via-white to-primary-50/30">
