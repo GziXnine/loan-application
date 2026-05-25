@@ -1,7 +1,7 @@
 import { forwardRef, useImperativeHandle, useEffect, useMemo, useState } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { step4Schema } from '../../utils/validationSchemas';
+import { getSchemaForStep } from "../../utils/schemaFactory";
 import useLoanStore from '../../store/loanStore';
 import Input from '../common/Input';
 import Select from '../common/Select';
@@ -13,6 +13,8 @@ const Step4AddressDetails = forwardRef((props, ref) => {
   const stepData = useLoanStore((state) => state.getStepData(4));
   const updateStepData = useLoanStore((state) => state.updateStepData);
 
+  const formData = useLoanStore((state) => state.formData);
+
   const {
     register,
     control,
@@ -22,7 +24,7 @@ const Step4AddressDetails = forwardRef((props, ref) => {
     watch,
     formState: { errors },
   } = useForm({
-    resolver: zodResolver(step4Schema),
+    resolver: zodResolver(getSchemaForStep(4, formData)),
     defaultValues: stepData,
     mode: 'onChange',
   });

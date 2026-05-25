@@ -3,7 +3,7 @@
 import { forwardRef, useImperativeHandle, useEffect } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { step3Schema } from "../../utils/validationSchemas";
+import { getSchemaForStep } from "../../utils/schemaFactory";
 import useLoanStore from "../../store/loanStore";
 import MaskedInput from "../common/MaskedInput";
 import Checkbox from "../common/Checkbox";
@@ -13,6 +13,8 @@ const Step3KYCVerification = forwardRef((props, ref) => {
   const stepData = useLoanStore((state) => state.getStepData(3));
   const updateStepData = useLoanStore((state) => state.updateStepData);
 
+  const formData = useLoanStore((state) => state.formData);
+
   const {
     control,
     trigger,
@@ -21,7 +23,7 @@ const Step3KYCVerification = forwardRef((props, ref) => {
     watch,
     formState: { errors },
   } = useForm({
-    resolver: zodResolver(step3Schema),
+    resolver: zodResolver(getSchemaForStep(3, formData)),
     defaultValues: stepData,
     mode: "onChange",
   });
