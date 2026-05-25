@@ -137,6 +137,11 @@ function AutoSaveIndicator() {
  */
 function SuccessScreen() {
   const resetForm = useLoanStore((state) => state.resetForm);
+  const formData = useLoanStore((state) => state.formData);
+  const uuid = window.crypto.randomUUID ? window.crypto.randomUUID() : `LS-${Date.now().toString(36).toUpperCase()}`;
+
+  const loanAmount = formData.step1.loanAmount || 0;
+  const loanType = formData.step1.loanType || "N/A";
 
   return (
     <div className="flex items-center justify-center min-h-[60vh]">
@@ -159,14 +164,37 @@ function SuccessScreen() {
         <h2 className="text-2xl font-heading font-bold text-gray-900 mb-3">
           Application Submitted! 🎉
         </h2>
-        <p className="text-gray-600 mb-2">
+        <p className="text-gray-600 mb-6">
           Your loan application has been successfully submitted. You will
           receive a confirmation email shortly.
         </p>
+
+        <div className="bg-surface-50 border border-surface-200 rounded-xl p-4 text-left text-sm mb-6">
+          <h4 className="font-semibold text-gray-900 mb-3 border-b border-surface-200 pb-2">Application Summary</h4>
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <span className="text-gray-500 block text-xs">Applicant Name</span>
+              <span className="font-medium text-gray-900">{formData.step2.fullName || "N/A"}</span>
+            </div>
+            <div>
+              <span className="text-gray-500 block text-xs">Loan Type</span>
+              <span className="font-medium text-gray-900 capitalize">{loanType.replace('_', ' ')}</span>
+            </div>
+            <div>
+              <span className="text-gray-500 block text-xs">Requested Amount</span>
+              <span className="font-medium text-gray-900">₹{Number(loanAmount).toLocaleString('en-IN')}</span>
+            </div>
+            <div>
+              <span className="text-gray-500 block text-xs">Tenure</span>
+              <span className="font-medium text-gray-900">{formData.step1.loanTenure || "N/A"} Months</span>
+            </div>
+          </div>
+        </div>
+
         <p className="text-sm text-gray-500 mb-8">
           Application Reference:{" "}
           <span className="font-mono font-semibold text-primary-500">
-            LS-{Date.now().toString(36).toUpperCase()}
+            {uuid}
           </span>
         </p>
         <div className="flex flex-col sm:flex-row gap-3 justify-center">
