@@ -3,7 +3,7 @@
 import { forwardRef, useEffect, useImperativeHandle, useMemo } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { buildStep1Schema } from "../../utils/validationSchemas";
+import { getSchemaForStep } from "../../utils/schemaFactory";
 import useLoanStore from "../../store/loanStore";
 import RadioGroup from "../common/RadioGroup";
 import CurrencyInput from "../common/CurrencyInput";
@@ -13,11 +13,11 @@ import Input from "../common/Input";
 const Step1LoanType = forwardRef((props, ref) => {
   const stepData = useLoanStore((state) => state.getStepData(1));
   const updateStepData = useLoanStore((state) => state.updateStepData);
-  const dateOfBirth = useLoanStore((state) => state.formData.step2.dateOfBirth);
+  const formData = useLoanStore((state) => state.formData);
 
   const resolver = useMemo(
-    () => zodResolver(buildStep1Schema(dateOfBirth)),
-    [dateOfBirth],
+    () => zodResolver(getSchemaForStep(1, formData)),
+    [formData],
   );
 
   const {
