@@ -88,6 +88,41 @@ export default function Wizard() {
     }
   }, [currentStep]);
 
+  // Handle browser back button via popstate
+  useEffect(() => {
+    const handlePopState = () => {
+      const hash = window.location.hash;
+      const stepMatch = hash.match(/#step-(\d+)/);
+      if (stepMatch) {
+        const step = parseInt(stepMatch[1], 10);
+        if (step >= 1 && step <= TOTAL_STEPS && isStepVisible(step)) {
+          // Only update if it's different to avoid re-renders
+          if (useLoanStore.getState().currentStep !== step) {
+            useLoanStore.getState().goToStep(step);
+          }
+        }
+      } else {
+        // No hash, go to step 1
+        useLoanStore.getState().goToStep(1);
+      }
+    };
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, [isStepVisible]);
+
+  // Sync hash when currentStep changes
+  useEffect(() => {
+    const currentHash = window.location.hash;
+    const targetHash = `#step-${currentStep}`;
+    if (currentHash !== targetHash) {
+      if (!currentHash) {
+        window.history.replaceState(null, '', targetHash);
+      } else {
+        window.history.pushState(null, '', targetHash);
+      }
+    }
+  }, [currentStep]);
+
   // Handle Next / Submit
   const handleNext = useCallback(async () => {
     // Trigger form validation via the ref
