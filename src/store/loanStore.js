@@ -116,9 +116,11 @@ const initialFormData = {
   },
   // Step 8: Review & Submit
   step8: {
+    declarationAccepted: false,
     termsAccepted: false,
     kfsAccepted: false,
     consentToDataProcessing: false,
+    highEmiConsent: false,
   },
 };
 
