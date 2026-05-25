@@ -273,6 +273,9 @@ export const step7Schema = z.object({
 });
 
 export const step8Schema = z.object({
+  declarationAccepted: z.boolean().refine((val) => val === true, {
+    message: 'You must confirm the declaration',
+  }),
   termsAccepted: z.boolean().refine((val) => val === true, {
     message: 'You must accept the Terms and Conditions',
   }),
@@ -282,4 +285,5 @@ export const step8Schema = z.object({
   consentToDataProcessing: z.boolean().refine((val) => val === true, {
     message: 'You must consent to data processing',
   }),
+  highEmiConsent: z.boolean().optional(),
 });

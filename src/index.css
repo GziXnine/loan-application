@@ -7,6 +7,7 @@
    ======================================== */
 
 @layer base {
+
   *,
   *::before,
   *::after {
@@ -31,7 +32,12 @@
     background-attachment: fixed;
   }
 
-  h1, h2, h3, h4, h5, h6 {
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
     @apply font-heading font-semibold tracking-tight;
   }
 
@@ -47,6 +53,7 @@
 }
 
 @layer components {
+
   /* ---- Card Styles ---- */
   .card {
     @apply bg-white rounded-2xl shadow-card border border-surface-200/50;
@@ -71,23 +78,17 @@
   }
 
   .form-input {
-    @apply w-full px-4 py-3 text-sm text-gray-900 bg-white
-           border border-surface-300 rounded-xl
-           transition-all duration-200 ease-out
-           placeholder:text-gray-400
-           hover:border-primary-300
-           focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 focus:outline-none;
-    min-height: 44px; /* WCAG touch target */
+    @apply w-full px-4 py-3 text-sm text-gray-900 bg-white border border-surface-300 rounded-xl transition-all duration-200 ease-out placeholder:text-gray-400 hover:border-primary-300 focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 focus:outline-none;
+    min-height: 44px;
+    /* WCAG touch target */
   }
 
   .form-input-error {
-    @apply border-error-500 bg-error-50/50
-           focus:border-error-500 focus:ring-error-500/20;
+    @apply border-error-500 bg-error-50/50 focus:border-error-500 focus:ring-error-500/20;
   }
 
   .form-input-success {
-    @apply border-accent-500 bg-accent-50/30
-           focus:border-accent-500 focus:ring-accent-500/20;
+    @apply border-accent-500 bg-accent-50/30 focus:border-accent-500 focus:ring-accent-500/20;
   }
 
   .form-input-disabled {
@@ -100,50 +101,30 @@
 
   /* ---- Button Styles ---- */
   .btn {
-    @apply inline-flex items-center justify-center gap-2
-           font-medium text-sm rounded-xl
-           transition-all duration-200 ease-out
-           focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2
-           disabled:opacity-50 disabled:cursor-not-allowed;
-    min-height: 44px; /* WCAG touch target */
+    @apply inline-flex items-center justify-center gap-2 font-medium text-sm rounded-xl transition-all duration-200 ease-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed;
+    min-height: 44px;
+    /* WCAG touch target */
     min-width: 44px;
   }
 
   .btn-primary {
-    @apply btn px-6 py-3
-           bg-primary-500 text-white
-           hover:bg-primary-600 active:bg-primary-700
-           focus-visible:ring-primary-500
-           shadow-sm hover:shadow-md;
+    @apply btn px-6 py-3 bg-primary-500 text-white hover:bg-primary-600 active:bg-primary-700 focus-visible:ring-primary-500 shadow-sm hover:shadow-md;
   }
 
   .btn-secondary {
-    @apply btn px-6 py-3
-           bg-white text-primary-500 border border-primary-200
-           hover:bg-primary-50 active:bg-primary-100
-           focus-visible:ring-primary-500;
+    @apply btn px-6 py-3 bg-white text-primary-500 border border-primary-200 hover:bg-primary-50 active:bg-primary-100 focus-visible:ring-primary-500;
   }
 
   .btn-accent {
-    @apply btn px-6 py-3
-           bg-accent-500 text-white
-           hover:bg-accent-600 active:bg-accent-700
-           focus-visible:ring-accent-500
-           shadow-sm hover:shadow-md;
+    @apply btn px-6 py-3 bg-accent-500 text-white hover:bg-accent-600 active:bg-accent-700 focus-visible:ring-accent-500 shadow-sm hover:shadow-md;
   }
 
   .btn-ghost {
-    @apply btn px-4 py-2
-           text-gray-600 hover:text-gray-900
-           hover:bg-surface-100 active:bg-surface-200
-           focus-visible:ring-primary-500;
+    @apply btn px-4 py-2 text-gray-600 hover:text-gray-900 hover:bg-surface-100 active:bg-surface-200 focus-visible:ring-primary-500;
   }
 
   .btn-danger {
-    @apply btn px-6 py-3
-           bg-error-500 text-white
-           hover:bg-error-600 active:bg-error-700
-           focus-visible:ring-error-500;
+    @apply btn px-6 py-3 bg-error-500 text-white hover:bg-error-600 active:bg-error-700 focus-visible:ring-error-500;
   }
 
   .btn-lg {
@@ -156,8 +137,7 @@
 
   /* ---- Badge Styles ---- */
   .badge {
-    @apply inline-flex items-center px-2.5 py-0.5 rounded-full
-           text-xs font-medium;
+    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium;
   }
 
   .badge-primary {

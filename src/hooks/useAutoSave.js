@@ -104,7 +104,7 @@ export async function loadSavedState() {
   try {
     const { payload } = JSON.parse(savedData);
     const decryptedState = await decryptData(payload);
-    
+
     // Convert arrays back to Sets
     return {
       ...decryptedState,

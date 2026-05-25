@@ -1,6 +1,8 @@
-import React, { createContext, useContext, forwardRef } from 'react';
-import clsx from 'clsx';
-import ErrorMessage from './ErrorMessage';
+/** @format */
+
+import React, { createContext, useContext, forwardRef } from "react";
+import clsx from "clsx";
+import ErrorMessage from "./ErrorMessage";
 
 const InputContext = createContext();
 
@@ -17,7 +19,7 @@ const InputContext = createContext();
 const Input = forwardRef(({ name, error, children, className }, ref) => {
   return (
     <InputContext.Provider value={{ name, error }}>
-      <div className={clsx('form-field', className)} ref={ref}>
+      <div className={clsx("form-field", className)} ref={ref}>
         {children}
       </div>
     </InputContext.Provider>
@@ -26,48 +28,69 @@ const Input = forwardRef(({ name, error, children, className }, ref) => {
 
 Input.Label = function InputLabel({ children, required, htmlFor, className }) {
   return (
-    <label htmlFor={htmlFor} className={clsx('form-label', { 'form-label-required': required }, className)}>
+    <label
+      htmlFor={htmlFor}
+      className={clsx(
+        "form-label",
+        { "form-label-required": required },
+        className,
+      )}
+    >
       {children}
     </label>
   );
 };
 
-Input.Field = forwardRef(({ id, type = 'text', placeholder, disabled, leftIcon, rightIcon, className, ...rest }, ref) => {
-  const { error } = useContext(InputContext);
-  return (
-    <div className="relative">
-      {leftIcon && (
-        <div className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none">
-          {leftIcon}
-        </div>
-      )}
-      <input
-        ref={ref}
-        id={id}
-        type={type}
-        placeholder={placeholder}
-        disabled={disabled}
-        aria-invalid={error ? 'true' : undefined}
-        className={clsx(
-          'form-input',
-          {
-            'form-input-error': error,
-            'form-input-disabled': disabled,
-            'pl-10': leftIcon,
-            'pr-10': rightIcon,
-          },
-          className
+Input.Field = forwardRef(
+  (
+    {
+      id,
+      type = "text",
+      placeholder,
+      disabled,
+      leftIcon,
+      rightIcon,
+      className,
+      ...rest
+    },
+    ref,
+  ) => {
+    const { error } = useContext(InputContext);
+    return (
+      <div className="relative">
+        {leftIcon && (
+          <div className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none">
+            {leftIcon}
+          </div>
         )}
-        {...rest}
-      />
-      {rightIcon && (
-        <div className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400">
-          {rightIcon}
-        </div>
-      )}
-    </div>
-  );
-});
+        <input
+          ref={ref}
+          id={id}
+          type={type}
+          placeholder={placeholder}
+          disabled={disabled}
+          aria-invalid={error ? "true" : undefined}
+          className={clsx(
+            "form-input",
+            {
+              "form-input-error": error,
+              "form-input-disabled": disabled,
+              "pl-10": leftIcon,
+              "pr-10": rightIcon,
+            },
+            className,
+          )}
+          {...rest}
+        />
+        {rightIcon && (
+          <div className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400">
+            {rightIcon}
+          </div>
+        )}
+      </div>
+    );
+  },
+);
 
 Input.Error = function InputError() {
   const { error } = useContext(InputContext);

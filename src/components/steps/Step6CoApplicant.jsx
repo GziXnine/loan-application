@@ -1,16 +1,18 @@
-import { forwardRef, useImperativeHandle, useEffect } from 'react';
-import { useForm, Controller } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { step6Schema } from '../../utils/validationSchemas';
-import useLoanStore from '../../store/loanStore';
-import Input from '../common/Input';
-import Select from '../common/Select';
-import CurrencyInput from '../common/CurrencyInput';
-import RadioGroup from '../common/RadioGroup';
-import MaskedInput from '../common/MaskedInput';
-import Checkbox from '../common/Checkbox';
-import SignatureCanvas from '../common/SignatureCanvas';
-import useVerification from '../../hooks/useVerification';
+/** @format */
+
+import { forwardRef, useImperativeHandle, useEffect } from "react";
+import { useForm, Controller } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { step6Schema } from "../../utils/validationSchemas";
+import useLoanStore from "../../store/loanStore";
+import Input from "../common/Input";
+import Select from "../common/Select";
+import CurrencyInput from "../common/CurrencyInput";
+import RadioGroup from "../common/RadioGroup";
+import MaskedInput from "../common/MaskedInput";
+import Checkbox from "../common/Checkbox";
+import SignatureCanvas from "../common/SignatureCanvas";
+import useVerification from "../../hooks/useVerification";
 
 const Step6CoApplicant = forwardRef((props, ref) => {
   const stepData = useLoanStore((state) => state.getStepData(6));
@@ -27,16 +29,18 @@ const Step6CoApplicant = forwardRef((props, ref) => {
   } = useForm({
     resolver: zodResolver(step6Schema),
     defaultValues: stepData,
-    mode: 'onChange',
+    mode: "onChange",
   });
 
-  const hasCoapplicant = watch('hasCoapplicant');
-  const coapplicantPan = watch('coapplicantPan');
+  const hasCoapplicant = watch("hasCoapplicant");
+  const coapplicantPan = watch("coapplicantPan");
 
-  const panVerification = useVerification(coapplicantPan, 'pan');
+  const panVerification = useVerification(coapplicantPan, "pan");
 
   useEffect(() => {
-    setValue('isCoapplicantPanVerified', panVerification.isVerified, { shouldValidate: true });
+    setValue("isCoapplicantPanVerified", panVerification.isVerified, {
+      shouldValidate: true,
+    });
   }, [panVerification.isVerified, setValue]);
 
   useImperativeHandle(ref, () => ({
@@ -50,16 +54,16 @@ const Step6CoApplicant = forwardRef((props, ref) => {
   }));
 
   const coapplicantOptions = [
-    { value: false, label: 'No, I am applying individually' },
-    { value: true, label: 'Yes, add a co-applicant' },
+    { value: false, label: "No, I am applying individually" },
+    { value: true, label: "Yes, add a co-applicant" },
   ];
 
   const relationshipOptions = [
-    { value: 'spouse', label: 'Spouse' },
-    { value: 'parent', label: 'Parent' },
-    { value: 'sibling', label: 'Sibling' },
-    { value: 'child', label: 'Child' },
-    { value: 'other', label: 'Other Relative' },
+    { value: "spouse", label: "Spouse" },
+    { value: "parent", label: "Parent" },
+    { value: "sibling", label: "Sibling" },
+    { value: "child", label: "Child" },
+    { value: "other", label: "Other Relative" },
   ];
 
   return (
@@ -69,7 +73,8 @@ const Step6CoApplicant = forwardRef((props, ref) => {
           Co-Applicant Details
         </h3>
         <p className="text-sm text-gray-500 mb-6">
-          Adding a co-applicant with a steady income can increase your loan eligibility.
+          Adding a co-applicant with a steady income can increase your loan
+          eligibility.
         </p>
       </div>
 
@@ -84,7 +89,7 @@ const Step6CoApplicant = forwardRef((props, ref) => {
             error={errors.hasCoapplicant?.message}
             {...field}
             value={field.value}
-            onChange={(e) => field.onChange(e.target.value === 'true')}
+            onChange={(e) => field.onChange(e.target.value === "true")}
           />
         )}
       />
@@ -94,7 +99,10 @@ const Step6CoApplicant = forwardRef((props, ref) => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <Input error={errors.coapplicantName?.message}>
               <Input.Label required>Co-Applicant Full Name</Input.Label>
-              <Input.Field placeholder="As per PAN" {...register('coapplicantName')} />
+              <Input.Field
+                placeholder="As per PAN"
+                {...register("coapplicantName")}
+              />
               <Input.Error />
             </Input>
 
@@ -104,7 +112,7 @@ const Step6CoApplicant = forwardRef((props, ref) => {
               required
               variant="custom"
               error={errors.coapplicantRelationship?.message}
-              {...register('coapplicantRelationship')}
+              {...register("coapplicantRelationship")}
             />
           </div>
 
@@ -125,7 +133,11 @@ const Step6CoApplicant = forwardRef((props, ref) => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <Input error={errors.coapplicantEmail?.message}>
               <Input.Label required>Email Address</Input.Label>
-              <Input.Field type="email" placeholder="co-applicant@example.com" {...register('coapplicantEmail')} />
+              <Input.Field
+                type="email"
+                placeholder="co-applicant@example.com"
+                {...register("coapplicantEmail")}
+              />
               <Input.Error />
             </Input>
 
@@ -135,7 +147,7 @@ const Step6CoApplicant = forwardRef((props, ref) => {
                 type="tel"
                 placeholder="10-digit mobile number"
                 leftIcon={<span className="text-sm">+91</span>}
-                {...register('coapplicantMobile')}
+                {...register("coapplicantMobile")}
               />
               <Input.Error />
             </Input>
@@ -153,14 +165,17 @@ const Step6CoApplicant = forwardRef((props, ref) => {
                     maskType="pan"
                     required
                     disabled={panVerification.isVerifying}
-                    error={errors.coapplicantPan?.message || panVerification.error}
+                    error={
+                      errors.coapplicantPan?.message || panVerification.error
+                    }
                     {...field}
                     onChange={(e) => {
                       field.onChange(e);
-                      if (panVerification.isVerified) setValue('isCoapplicantPanVerified', false);
+                      if (panVerification.isVerified)
+                        setValue("isCoapplicantPanVerified", false);
                     }}
                     onBlur={() => {
-                      trigger('coapplicantPan');
+                      trigger("coapplicantPan");
                       panVerification.triggerVerification();
                     }}
                   />
@@ -170,21 +185,48 @@ const Step6CoApplicant = forwardRef((props, ref) => {
             <div className="min-w-[140px] mb-[18px]">
               {panVerification.isVerifying ? (
                 <span className="inline-flex items-center gap-2 text-sm text-primary-600">
-                  <svg className="animate-spin w-4 h-4" fill="none" viewBox="0 0 24 24">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                  <svg
+                    className="animate-spin w-4 h-4"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                  >
+                    <circle
+                      className="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                    />
+                    <path
+                      className="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+                    />
                   </svg>
                   Verifying...
                 </span>
               ) : panVerification.isVerified ? (
                 <span className="inline-flex items-center gap-2 text-sm text-accent-600">
-                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  <svg
+                    className="w-4 h-4"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M5 13l4 4L19 7"
+                    />
                   </svg>
                   Verified
                 </span>
               ) : (
-                <span className="text-xs text-gray-400">Verification pending</span>
+                <span className="text-xs text-gray-400">
+                  Verification pending
+                </span>
               )}
             </div>
           </div>

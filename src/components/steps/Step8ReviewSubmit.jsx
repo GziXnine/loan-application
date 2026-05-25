@@ -1,9 +1,11 @@
-import { forwardRef, useImperativeHandle } from 'react';
-import { useForm, Controller } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { step8Schema } from '../../utils/validationSchemas';
-import useLoanStore from '../../store/loanStore';
-import Checkbox from '../common/Checkbox';
+/** @format */
+
+import { forwardRef, useImperativeHandle } from "react";
+import { useForm, Controller } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { step8Schema } from "../../utils/validationSchemas";
+import useLoanStore from "../../store/loanStore";
+import Checkbox from "../common/Checkbox";
 
 const Step8ReviewSubmit = forwardRef((props, ref) => {
   const stepData = useLoanStore((state) => state.getStepData(8));
@@ -20,7 +22,7 @@ const Step8ReviewSubmit = forwardRef((props, ref) => {
   } = useForm({
     resolver: zodResolver(step8Schema),
     defaultValues: stepData,
-    mode: 'onChange',
+    mode: "onChange",
   });
 
   function checkEmiAffordability() {
@@ -29,7 +31,7 @@ const Step8ReviewSubmit = forwardRef((props, ref) => {
     const employmentType = formData.step5.employmentType;
 
     let monthlyIncome = 0;
-    if (employmentType === 'salaried') {
+    if (employmentType === "salaried") {
       monthlyIncome = Number(formData.step5.monthlyIncome) || 0;
     } else {
       monthlyIncome = Number(formData.step5.monthlyProfit) || 0;
@@ -39,23 +41,25 @@ const Step8ReviewSubmit = forwardRef((props, ref) => {
     }
 
     if (!loanAmount || !tenureMonths || !monthlyIncome) {
-      return { isAffordable: true, message: '' };
+      return { isAffordable: true, message: "" };
     }
 
     // Assumed baseline interest rate for affordability checks.
     const annualRate = 0.12;
     const monthlyRate = annualRate / 12;
-    const emi = (loanAmount * monthlyRate * Math.pow(1 + monthlyRate, tenureMonths)) /
+    const emi =
+      (loanAmount * monthlyRate * Math.pow(1 + monthlyRate, tenureMonths)) /
       (Math.pow(1 + monthlyRate, tenureMonths) - 1);
 
     if (emi > monthlyIncome * 0.5) {
       return {
         isAffordable: false,
-        message: 'EMI exceeds 50% of your monthly income. Please reduce loan amount or tenure.',
+        message:
+          "EMI exceeds 50% of your monthly income. Please reduce loan amount or tenure.",
       };
     }
 
-    return { isAffordable: true, message: '' };
+    return { isAffordable: true, message: "" };
   }
 
   useImperativeHandle(ref, () => ({
@@ -63,9 +67,9 @@ const Step8ReviewSubmit = forwardRef((props, ref) => {
       const isValid = await trigger();
       const emiCheck = checkEmiAffordability();
       if (!emiCheck.isAffordable) {
-        setError('root', { type: 'manual', message: emiCheck.message });
+        setError("root", { type: "manual", message: emiCheck.message });
       } else {
-        clearErrors('root');
+        clearErrors("root");
       }
       if (isValid && emiCheck.isAffordable) {
         updateStepData(8, getValues());
@@ -81,7 +85,8 @@ const Step8ReviewSubmit = forwardRef((props, ref) => {
           Review & Submit
         </h3>
         <p className="text-sm text-gray-500 mb-6">
-          Please review your loan summary and provide your digital signature to submit the application.
+          Please review your loan summary and provide your digital signature to
+          submit the application.
         </p>
       </div>
 
@@ -93,22 +98,30 @@ const Step8ReviewSubmit = forwardRef((props, ref) => {
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
           <div>
             <span className="text-gray-500 block mb-0.5">Applicant Name</span>
-            <span className="font-medium text-gray-900">{formData.step2.fullName || 'Not provided'}</span>
+            <span className="font-medium text-gray-900">
+              {formData.step2.fullName || "Not provided"}
+            </span>
           </div>
           <div>
             <span className="text-gray-500 block mb-0.5">Loan Type</span>
-            <span className="font-medium text-gray-900 capitalize">{formData.step1.loanType || 'Not selected'}</span>
+            <span className="font-medium text-gray-900 capitalize">
+              {formData.step1.loanType || "Not selected"}
+            </span>
           </div>
           <div>
             <span className="text-gray-500 block mb-0.5">Requested Amount</span>
             <span className="font-medium text-gray-900">
-              {formData.step1.loanAmount ? `₹${Number(formData.step1.loanAmount).toLocaleString('en-IN')}` : 'Not provided'}
+              {formData.step1.loanAmount
+                ? `₹${Number(formData.step1.loanAmount).toLocaleString("en-IN")}`
+                : "Not provided"}
             </span>
           </div>
           <div>
             <span className="text-gray-500 block mb-0.5">Tenure</span>
             <span className="font-medium text-gray-900">
-              {formData.step1.loanTenure ? `${formData.step1.loanTenure} Months` : 'Not provided'}
+              {formData.step1.loanTenure
+                ? `${formData.step1.loanTenure} Months`
+                : "Not provided"}
             </span>
           </div>
         </div>
@@ -116,13 +129,15 @@ const Step8ReviewSubmit = forwardRef((props, ref) => {
 
       {/* Consents & Agreements */}
       <div className="space-y-4">
-        <h4 className="font-heading font-semibold text-gray-900">Declarations & Consent</h4>
+        <h4 className="font-heading font-semibold text-gray-900">
+          Declarations & Consent
+        </h4>
         {errors.root?.message && (
           <div className="border border-error-200 bg-error-50 text-error-700 rounded-xl p-3 text-sm">
             {errors.root.message}
           </div>
         )}
-        
+
         <Controller
           name="kfsAccepted"
           control={control}
@@ -167,7 +182,6 @@ const Step8ReviewSubmit = forwardRef((props, ref) => {
           )}
         />
       </div>
-
     </div>
   );
 });

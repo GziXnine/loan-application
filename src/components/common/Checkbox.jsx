@@ -1,10 +1,12 @@
-import { forwardRef, useId } from 'react';
-import clsx from 'clsx';
-import ErrorMessage from './ErrorMessage';
+/** @format */
+
+import { forwardRef, useId } from "react";
+import clsx from "clsx";
+import ErrorMessage from "./ErrorMessage";
 
 /**
  * Checkbox Component
- * 
+ *
  * Reusable checkbox with linked label.
  * - Custom styled checkbox with animation
  * - forwardRef for React Hook Form
@@ -25,14 +27,14 @@ const Checkbox = forwardRef(function Checkbox(
     id: customId,
     ...rest
   },
-  ref
+  ref,
 ) {
   const generatedId = useId();
   const checkboxId = customId || `checkbox-${name || generatedId}`;
   const errorId = `${checkboxId}-error`;
 
   return (
-    <div className={clsx('form-field', className)}>
+    <div className={clsx("form-field", className)}>
       <div className="flex items-start gap-3">
         {/* Custom Checkbox */}
         <div className="flex items-center h-6 mt-0.5">
@@ -44,18 +46,18 @@ const Checkbox = forwardRef(function Checkbox(
             checked={checked}
             onChange={onChange}
             disabled={disabled}
-            aria-invalid={error ? 'true' : undefined}
+            aria-invalid={error ? "true" : undefined}
             aria-describedby={error ? errorId : undefined}
             className={clsx(
-              'w-5 h-5 rounded-md border-2 cursor-pointer',
-              'transition-all duration-200',
-              'focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2',
-              'checked:bg-primary-500 checked:border-primary-500',
+              "w-5 h-5 rounded-md border-2 cursor-pointer",
+              "transition-all duration-200",
+              "focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2",
+              "checked:bg-primary-500 checked:border-primary-500",
               {
-                'border-surface-300 hover:border-primary-300': !error,
-                'border-error-500': error,
-                'opacity-50 cursor-not-allowed': disabled,
-              }
+                "border-surface-300 hover:border-primary-300": !error,
+                "border-error-500": error,
+                "opacity-50 cursor-not-allowed": disabled,
+              },
             )}
             {...rest}
           />
@@ -66,8 +68,8 @@ const Checkbox = forwardRef(function Checkbox(
           <label
             htmlFor={checkboxId}
             className={clsx(
-              'text-sm text-gray-700 cursor-pointer select-none',
-              { 'font-medium': !description }
+              "text-sm text-gray-700 cursor-pointer select-none",
+              { "font-medium": !description },
             )}
           >
             {label}

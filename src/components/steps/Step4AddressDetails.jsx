@@ -233,7 +233,7 @@ const Step4AddressDetails = forwardRef((props, ref) => {
 
       {showPreviousAddress && (
         <div className="space-y-6 pt-4 border-t border-surface-200">
-          <h4 className="text-sm font-semibold text-gray-800">Previous Address (Required for < 1 year)</h4>
+          <h4 className="text-sm font-semibold text-gray-800">Previous Address (Required for &lt; 1 year)</h4>
           <Input error={errors.previousAddress?.message}>
             <Input.Label required>Previous Address Line 1</Input.Label>
             <Input.Field placeholder="House/Flat No., Building Name, Street" {...register('previousAddress')} />

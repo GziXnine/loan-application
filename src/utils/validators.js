@@ -43,7 +43,7 @@ export function validateAadhaar(aadhaar) {
 
   const array = aadhaar.split('').map(Number).reverse();
   let c = 0;
-  
+
   for (let i = 0; i < array.length; i++) {
     c = verhoeffD[c][verhoeffP[i % 8][array[i]]];
   }
