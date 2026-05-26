@@ -55,7 +55,32 @@ The project uses Vitest for unit testing and Cypress for End-to-End (E2E) testin
 
 ## Screenshots
 
-![Loan Application Wizard Screenshot](./Screenshot.jpg)
+### Step 1: Loan Type
+![Step 1 - Loan Type](https://raw.githubusercontent.com/GziXnine/loan-application/main/Shots/screenshot-step1.jpg)
+
+### Step 2: Personal Info
+![Step 2 - Personal Info](https://raw.githubusercontent.com/GziXnine/loan-application/main/Shots/screenshot-step2.jpg)
+
+### Step 3: KYC Verification
+![Step 3 - KYC Verification](https://raw.githubusercontent.com/GziXnine/loan-application/main/Shots/screenshot-step3.jpg)
+
+### Step 4: Address Details
+![Step 4 - Address Details](https://raw.githubusercontent.com/GziXnine/loan-application/main/Shots/screenshot-step4.jpg)
+
+### Step 5: Employment
+![Step 5 - Employment](https://raw.githubusercontent.com/GziXnine/loan-application/main/Shots/screenshot-step5.jpg)
+
+### Step 6: Co-Applicant
+![Step 6 - Co-Applicant](https://raw.githubusercontent.com/GziXnine/loan-application/main/Shots/screenshot-step6.jpg)
+
+### Step 7: Documents
+![Step 7 - Documents](https://raw.githubusercontent.com/GziXnine/loan-application/main/Shots/screenshot-step7.jpg)
+
+### Step 8: Review & Submit
+![Step 8 - Review & Submit](https://raw.githubusercontent.com/GziXnine/loan-application/main/Shots/screenshot-step8.jpg)
+
+### Application Submitted
+![Application Submitted](https://raw.githubusercontent.com/GziXnine/loan-application/main/Shots/screenshot-application-submitted.jpg)
 
 ## Known Limitations
 
