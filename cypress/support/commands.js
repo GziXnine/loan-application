@@ -51,9 +51,15 @@ Cypress.Commands.add('drawSignature', (labelMatcher) => {
       const endY = rect.top + rect.height * 0.6;
 
       cy.wrap($canvas)
-        .trigger('mousedown', { clientX: startX, clientY: startY, buttons: 1, force: true })
-        .trigger('mousemove', { clientX: midX, clientY: midY, buttons: 1, force: true })
-        .trigger('mousemove', { clientX: endX, clientY: endY, buttons: 1, force: true })
+        .trigger('mousedown', {
+          clientX: startX, clientY: startY, buttons: 1, force: true,
+        })
+        .trigger('mousemove', {
+          clientX: midX, clientY: midY, buttons: 1, force: true,
+        })
+        .trigger('mousemove', {
+          clientX: endX, clientY: endY, buttons: 1, force: true,
+        })
         .trigger('mouseup', { force: true });
     });
 });
