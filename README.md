@@ -1,5 +1,8 @@
 # Loan Application Wizard
 
+- **Live Demo:** [https://loan-application-wheat.vercel.app](https://loan-application-wheat.vercel.app)
+- **Repository:** [https://github.com/GziXnine/loan-application](https://github.com/GziXnine/loan-application)
+
 A comprehensive, multi-step loan application form built with React, Vite, React Hook Form, Zod, and Zustand.
 
 ## Project Description
@@ -52,7 +55,7 @@ The project uses Vitest for unit testing and Cypress for End-to-End (E2E) testin
 
 ## Screenshots
 
-*(Placeholder for screenshots of the application steps, e.g., Personal Info, Document Upload, Review & Submit)*
+![Loan Application Wizard Screenshot](./Screenshot.jpg)
 
 ## Known Limitations
 
