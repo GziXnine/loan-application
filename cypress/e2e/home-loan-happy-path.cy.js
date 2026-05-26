@@ -1,20 +1,19 @@
 /// <reference types="cypress" />
 
-describe('Personal Loan Happy Path', () => {
+describe('Home Loan Happy Path', () => {
   beforeEach(() => {
     cy.clearLocalStorage();
     cy.visit('/');
   });
 
-  it('submits a complete personal-loan application (salaried) successfully', () => {
-    cy.fixture('valid-personal-loan.json').then((fixture) => {
+  it('submits a complete home-loan application with a co-applicant successfully', () => {
+    cy.fixture('valid-home-loan.json').then((fixture) => {
       cy.fillStep1(fixture.step1);
       cy.fillStep2(fixture.step2);
       cy.fillStep3(fixture.step3);
       cy.fillStep4(fixture.step4);
       cy.fillStep5(fixture.step5);
-
-      // Step 6 should be skipped for personal loans <= 5L.
+      cy.fillStep6(fixture.step6);
       cy.fillStep7(fixture.step7);
       cy.fillStep8(fixture.step8);
 
