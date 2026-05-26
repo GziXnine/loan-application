@@ -11,7 +11,7 @@
 
 const RATE_MAP = {
   personal: { annualRate: 0.12, processingFeeRate: 0.015 },
-  home:     { annualRate: 0.085, processingFeeRate: 0.005 },
+  home: { annualRate: 0.085, processingFeeRate: 0.005 },
   business: { annualRate: 0.14, processingFeeRate: 0.02 },
 };
 
@@ -48,7 +48,7 @@ export function calculateEmi({ principal, annualRate, tenureMonths }) {
   const rate = annualRate ?? FALLBACK_RATE.annualRate;
   const monthlyRate = rate / 12;
   if (monthlyRate === 0) return principal / tenureMonths;
-  const factor = Math.pow(1 + monthlyRate, tenureMonths);
+  const factor = (1 + monthlyRate) ** tenureMonths;
   return (principal * monthlyRate * factor) / (factor - 1);
 }
 

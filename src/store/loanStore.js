@@ -1,6 +1,6 @@
 /**
  * LendSwift Loan Application - Global State Store
- * 
+ *
  * Uses Zustand for lightweight, performant state management.
  * Manages the multi-step wizard state, form data across all 8 steps,
  * and cross-step validation dependencies.
@@ -17,14 +17,30 @@ export const LOAN_TYPE_BUSINESS = 'business';
 export const TOTAL_STEPS = 8;
 
 export const STEP_CONFIG = [
-  { id: 1, title: 'Loan Type', description: 'Select your loan type and amount', icon: '🏦' },
-  { id: 2, title: 'Personal Info', description: 'Your personal details', icon: '👤' },
-  { id: 3, title: 'KYC Verification', description: 'Identity verification', icon: '🔐' },
-  { id: 4, title: 'Address Details', description: 'Your residence information', icon: '🏠' },
-  { id: 5, title: 'Employment', description: 'Employment and income', icon: '💼' },
-  { id: 6, title: 'Co-Applicant', description: 'Co-applicant details', icon: '👥' },
-  { id: 7, title: 'Documents', description: 'Upload required documents', icon: '📄' },
-  { id: 8, title: 'Review & Submit', description: 'Review and submit', icon: '✅' },
+  {
+    id: 1, title: 'Loan Type', description: 'Select your loan type and amount', icon: '🏦',
+  },
+  {
+    id: 2, title: 'Personal Info', description: 'Your personal details', icon: '👤',
+  },
+  {
+    id: 3, title: 'KYC Verification', description: 'Identity verification', icon: '🔐',
+  },
+  {
+    id: 4, title: 'Address Details', description: 'Your residence information', icon: '🏠',
+  },
+  {
+    id: 5, title: 'Employment', description: 'Employment and income', icon: '💼',
+  },
+  {
+    id: 6, title: 'Co-Applicant', description: 'Co-applicant details', icon: '👥',
+  },
+  {
+    id: 7, title: 'Documents', description: 'Upload required documents', icon: '📄',
+  },
+  {
+    id: 8, title: 'Review & Submit', description: 'Review and submit', icon: '✅',
+  },
 ];
 
 // ============================================================
@@ -148,7 +164,7 @@ const useLoanStore = create((set, get) => ({
 
   // ---- Actions: Navigation ----
   goToStep: (step) => {
-    const { completedSteps, visitedSteps } = get();
+    const { completedSteps } = get();
     // Can only navigate to completed steps or the next incomplete step
     const maxAllowedStep = Math.max(...completedSteps, 0) + 1;
     if (step >= 1 && step <= TOTAL_STEPS && step <= Math.max(maxAllowedStep, 1)) {
@@ -201,9 +217,7 @@ const useLoanStore = create((set, get) => ({
     }));
   },
 
-  getStepData: (step) => {
-    return get().formData[`step${step}`];
-  },
+  getStepData: (step) => get().formData[`step${step}`],
 
   // ---- Actions: Auto-save ----
   setLastSavedAt: (timestamp) => {
@@ -245,7 +259,7 @@ const useLoanStore = create((set, get) => ({
   // ---- Computed: Step Visibility ----
   isStepVisible: (step) => {
     const { formData } = get();
-    const loanType = formData.step1.loanType;
+    const { loanType } = formData.step1;
     const loanAmount = parseFloat(formData.step1.loanAmount) || 0;
 
     // Step 6 (Co-Applicant) is only visible for:

@@ -2,13 +2,21 @@ import { z } from 'zod';
 import { validateAadhaar, validateGST, validatePAN } from './validators';
 
 const loanConstraintsByType = {
-  personal: { minAmount: 10000, maxAmount: 2000000, minTenure: 6, maxTenure: 60 },
-  home: { minAmount: 500000, maxAmount: 50000000, minTenure: 60, maxTenure: 360 },
-  business: { minAmount: 100000, maxAmount: 20000000, minTenure: 12, maxTenure: 120 },
+  personal: {
+    minAmount: 10000, maxAmount: 2000000, minTenure: 6, maxTenure: 60,
+  },
+  home: {
+    minAmount: 500000, maxAmount: 50000000, minTenure: 60, maxTenure: 360,
+  },
+  business: {
+    minAmount: 100000, maxAmount: 20000000, minTenure: 12, maxTenure: 120,
+  },
 };
 
 const getLoanConstraints = (loanType) => (
-  loanConstraintsByType[loanType] || { minAmount: 10000, maxAmount: 50000000, minTenure: 6, maxTenure: 360 }
+  loanConstraintsByType[loanType] || {
+    minAmount: 10000, maxAmount: 50000000, minTenure: 6, maxTenure: 360,
+  }
 );
 
 const computeAge = (dateString) => {
@@ -39,7 +47,9 @@ export const buildStep1Schema = (dateOfBirth) => z.object({
     .max(360, 'Maximum tenure is 360 months'),
   loanPurpose: z.string().min(2, 'Please select a valid purpose'),
 }).superRefine((data, ctx) => {
-  const { minAmount, maxAmount, minTenure, maxTenure } = getLoanConstraints(data.loanType);
+  const {
+    minAmount, maxAmount, minTenure, maxTenure,
+  } = getLoanConstraints(data.loanType);
   if (data.loanAmount < minAmount || data.loanAmount > maxAmount) {
     ctx.addIssue({
       code: z.ZodIssueCode.custom,
@@ -121,7 +131,7 @@ export const step4Schema = z.object({
     (val) => (val === '' || val === null || val === undefined ? undefined : val),
     z.coerce.number({ required_error: 'Years at current address is required' })
       .min(0, 'Cannot be negative')
-      .max(100, 'Invalid years')
+      .max(100, 'Invalid years'),
   ),
   rentAmount: z.coerce.number().optional().or(z.literal('')),
   sameAsPermanent: z.boolean(),

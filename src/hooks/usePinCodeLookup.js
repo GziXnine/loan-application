@@ -15,7 +15,7 @@ export default function usePinCodeLookup(pincode) {
       setPostOffice('');
       setIsLoading(false);
       setError('');
-      return;
+      return undefined;
     }
 
     if (!/^[1-9][0-9]{5}$/.test(pincode)) {
@@ -23,7 +23,7 @@ export default function usePinCodeLookup(pincode) {
       setCity('');
       setState('');
       setPostOffice('');
-      return;
+      return undefined;
     }
 
     setIsLoading(true);

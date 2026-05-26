@@ -1,6 +1,6 @@
 /**
  * Web Crypto API Utility for AES-256-GCM Encryption
- * 
+ *
  * Required by RBI guidelines to encrypt PII data in LocalStorage.
  * We use AES-GCM with a PBKDF2 derived key.
  */
@@ -19,7 +19,7 @@ async function getDerivedKey() {
     new TextEncoder().encode(ENCRYPTION_PASSPHRASE),
     { name: 'PBKDF2' },
     false,
-    ['deriveBits', 'deriveKey']
+    ['deriveBits', 'deriveKey'],
   );
 
   return crypto.subtle.deriveKey(
@@ -32,7 +32,7 @@ async function getDerivedKey() {
     keyMaterial,
     { name: 'AES-GCM', length: 256 },
     true,
-    ['encrypt', 'decrypt']
+    ['encrypt', 'decrypt'],
   );
 }
 
@@ -50,10 +50,10 @@ export async function encryptData(data) {
     const cipherBuffer = await crypto.subtle.encrypt(
       {
         name: 'AES-GCM',
-        iv: iv,
+        iv,
       },
       key,
-      encodedData
+      encodedData,
     );
 
     // Combine IV and Ciphertext
@@ -65,6 +65,7 @@ export async function encryptData(data) {
     // Convert to Base64
     return btoa(String.fromCharCode.apply(null, combinedArray));
   } catch (error) {
+    // eslint-disable-next-line no-console
     console.error('Encryption failed:', error);
     throw new Error('Failed to encrypt data');
   }
@@ -78,7 +79,7 @@ export async function encryptData(data) {
 export async function decryptData(encryptedBase64) {
   try {
     const key = await getDerivedKey();
-    
+
     // Decode Base64 to ArrayBuffer
     const binaryStr = atob(encryptedBase64);
     const combinedArray = new Uint8Array(binaryStr.length);
@@ -93,15 +94,16 @@ export async function decryptData(encryptedBase64) {
     const decryptedBuffer = await crypto.subtle.decrypt(
       {
         name: 'AES-GCM',
-        iv: iv,
+        iv,
       },
       key,
-      ciphertext
+      ciphertext,
     );
 
     const decryptedStr = new TextDecoder().decode(decryptedBuffer);
     return JSON.parse(decryptedStr);
   } catch (error) {
+    // eslint-disable-next-line no-console
     console.error('Decryption failed:', error);
     throw new Error('Failed to decrypt data');
   }

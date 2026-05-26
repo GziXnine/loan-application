@@ -48,7 +48,6 @@ export function getSchemaForStep(stepId, formData) {
       const loanType = formData?.step1?.loanType;
       const employmentType = formData?.step5?.employmentType;
       const residenceType = formData?.step4?.residenceType;
-      const hasCoapplicant = formData?.step6?.hasCoapplicant;
 
       return step7Schema.superRefine((data, ctx) => {
         // Business proof
@@ -59,7 +58,7 @@ export function getSchemaForStep(stepId, formData) {
             path: ['additionalDocs'],
           });
         }
-        
+
         // Income proof
         if ((employmentType === 'salaried' || employmentType === 'self_employed' || employmentType === 'business_owner') && (!data.incomeProof || data.incomeProof.length === 0)) {
           ctx.addIssue({
@@ -71,16 +70,16 @@ export function getSchemaForStep(stepId, formData) {
 
         // Rent agreement
         if (residenceType === 'rented' && (!data.addressProof || data.addressProof.length === 0)) {
-           // We might need to make sure one of the address proofs is a rent agreement, 
-           // but checking length > 0 is a proxy for now if they haven't uploaded anything.
-           // Usually address proof handles it, but let's enforce address proof here.
-           if (!data.addressProof || data.addressProof.length === 0) {
-             ctx.addIssue({
-               code: z.ZodIssueCode.custom,
-               message: 'Rent Agreement is required as address proof for rented residence',
-               path: ['addressProof'],
-             });
-           }
+          // We might need to make sure one of the address proofs is a rent agreement,
+          // but checking length > 0 is a proxy for now if they haven't uploaded anything.
+          // Usually address proof handles it, but let's enforce address proof here.
+          if (!data.addressProof || data.addressProof.length === 0) {
+            ctx.addIssue({
+              code: z.ZodIssueCode.custom,
+              message: 'Rent Agreement is required as address proof for rented residence',
+              path: ['addressProof'],
+            });
+          }
         }
       });
     }

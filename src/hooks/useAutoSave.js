@@ -29,9 +29,8 @@ export async function triggerManualSave() {
 
     localStorage.setItem(STORAGE_KEY, JSON.stringify(storageObject));
     store.setLastSavedAt(storageObject.timestamp);
-    console.log('Manual save complete');
   } catch (err) {
-    console.error('Manual save failed:', err);
+    // ignore
   }
 }
 
@@ -41,13 +40,8 @@ export async function triggerManualSave() {
  */
 export default function useAutoSave() {
   const {
-    formData,
-    currentStep,
-    completedSteps,
-    visitedSteps,
     isDirty,
     autoSaveEnabled,
-    setLastSavedAt,
   } = useLoanStore();
 
   const isInitialMount = useRef(true);
@@ -63,10 +57,10 @@ export default function useAutoSave() {
   useEffect(() => {
     if (isInitialMount.current) {
       isInitialMount.current = false;
-      return;
+      return undefined;
     }
 
-    if (!isDirty || !autoSaveEnabled) return;
+    if (!isDirty || !autoSaveEnabled) return undefined;
 
     const intervalId = setInterval(() => {
       triggerSave();
@@ -77,9 +71,9 @@ export default function useAutoSave() {
 
   // 3. Also save on beforeunload (when user closes tab)
   useEffect(() => {
-    const handleBeforeUnload = (e) => {
+    const handleBeforeUnload = () => {
       if (isDirty && autoSaveEnabled) {
-        // Can't reliably await async crypto in beforeunload, 
+        // Can't reliably await async crypto in beforeunload,
         // so we just rely on the 30s interval for the most part.
         // Modern browsers often block async work here.
       }
@@ -112,7 +106,6 @@ export async function loadSavedState() {
       visitedSteps: new Set(decryptedState.visitedSteps),
     };
   } catch (err) {
-    console.error('Failed to load/decrypt saved state', err);
     return null;
   }
 }

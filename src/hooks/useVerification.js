@@ -1,4 +1,6 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import {
+  useCallback, useEffect, useRef, useState,
+} from 'react';
 import { validateAadhaar, validatePAN } from '../utils/validators';
 
 const validatorsByType = {
