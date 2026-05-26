@@ -1,8 +1,10 @@
 /** @format */
 
-import React, { createContext, useContext, forwardRef } from "react";
-import clsx from "clsx";
-import ErrorMessage from "./ErrorMessage";
+import React, {
+  createContext, useContext, forwardRef, useMemo,
+} from 'react';
+import clsx from 'clsx';
+import ErrorMessage from './ErrorMessage';
 
 const InputContext = createContext();
 
@@ -16,23 +18,28 @@ const InputContext = createContext();
  *   <Input.HelpText>Some help</Input.HelpText>
  * </Input>
  */
-const Input = forwardRef(({ name, error, children, className }, ref) => {
+const Input = forwardRef(({
+  name, error, children, className,
+}, ref) => {
+  const contextValue = useMemo(() => ({ name, error }), [name, error]);
   return (
-    <InputContext.Provider value={{ name, error }}>
-      <div className={clsx("form-field", className)} ref={ref}>
+    <InputContext.Provider value={contextValue}>
+      <div className={clsx('form-field', className)} ref={ref}>
         {children}
       </div>
     </InputContext.Provider>
   );
 });
 
-Input.Label = function InputLabel({ children, required, htmlFor, className }) {
+Input.Label = function InputLabel({
+  children, required, htmlFor, className,
+}) {
   return (
     <label
       htmlFor={htmlFor}
       className={clsx(
-        "form-label",
-        { "form-label-required": required },
+        'form-label',
+        { 'form-label-required': required },
         className,
       )}
     >
@@ -45,7 +52,7 @@ Input.Field = forwardRef(
   (
     {
       id,
-      type = "text",
+      type = 'text',
       placeholder,
       disabled,
       leftIcon,
@@ -69,14 +76,14 @@ Input.Field = forwardRef(
           type={type}
           placeholder={placeholder}
           disabled={disabled}
-          aria-invalid={error ? "true" : undefined}
+          aria-invalid={error ? 'true' : undefined}
           className={clsx(
-            "form-input",
+            'form-input',
             {
-              "form-input-error": error,
-              "form-input-disabled": disabled,
-              "pl-10": leftIcon,
-              "pr-10": rightIcon,
+              'form-input-error': error,
+              'form-input-disabled': disabled,
+              'pl-10': leftIcon,
+              'pr-10': rightIcon,
             },
             className,
           )}

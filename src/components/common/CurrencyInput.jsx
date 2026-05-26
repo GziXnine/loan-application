@@ -1,16 +1,18 @@
 /** @format */
 
-import { forwardRef, useId, useState, useCallback } from "react";
-import clsx from "clsx";
-import ErrorMessage from "./ErrorMessage";
+import {
+  forwardRef, useId, useState, useCallback,
+} from 'react';
+import clsx from 'clsx';
+import ErrorMessage from './ErrorMessage';
 
-const CurrencyInput = forwardRef(function CurrencyInput(
+const CurrencyInput = forwardRef((
   {
     label,
     name,
     value: controlledValue,
     onChange,
-    placeholder = "0",
+    placeholder = '0',
     helpText,
     error,
     required = false,
@@ -22,28 +24,26 @@ const CurrencyInput = forwardRef(function CurrencyInput(
     ...rest
   },
   ref,
-) {
+) => {
   const generatedId = useId();
   const inputId = customId || `currency-${name || generatedId}`;
   const helpId = `${inputId}-help`;
   const errorId = `${inputId}-error`;
 
-  const [displayValue, setDisplayValue] = useState(() =>
-    controlledValue ? formatIndianCurrency(controlledValue) : "",
-  );
-
   function formatIndianCurrency(num) {
-    if (!num && num !== 0) return "";
-    const numStr = String(num).replace(/[^0-9]/g, "");
-    if (!numStr) return "";
+    if (!num && num !== 0) return '';
+    const numStr = String(num).replace(/[^0-9]/g, '');
+    if (!numStr) return '';
     const number = parseInt(numStr, 10);
-    if (isNaN(number)) return "";
-    return number.toLocaleString("en-IN");
+    if (Number.isNaN(number)) return '';
+    return number.toLocaleString('en-IN');
   }
+
+  const [displayValue, setDisplayValue] = useState(() => (controlledValue ? formatIndianCurrency(controlledValue) : ''));
 
   const handleChange = useCallback(
     (e) => {
-      const rawValue = e.target.value.replace(/[^0-9]/g, "");
+      const rawValue = e.target.value.replace(/[^0-9]/g, '');
       const formatted = formatIndianCurrency(rawValue);
       setDisplayValue(formatted);
 
@@ -59,11 +59,11 @@ const CurrencyInput = forwardRef(function CurrencyInput(
   );
 
   return (
-    <div className={clsx("form-field", className)}>
+    <div className={clsx('form-field', className)}>
       {label && (
         <label
           htmlFor={inputId}
-          className={clsx("form-label", { "form-label-required": required })}
+          className={clsx('form-label', { 'form-label-required': required })}
         >
           {label}
         </label>
@@ -83,14 +83,14 @@ const CurrencyInput = forwardRef(function CurrencyInput(
           placeholder={placeholder}
           disabled={disabled}
           required={required}
-          aria-invalid={error ? "true" : undefined}
+          aria-invalid={error ? 'true' : undefined}
           aria-describedby={
-            [error && errorId, helpText && helpId].filter(Boolean).join(" ") ||
-            undefined
+            [error && errorId, helpText && helpId].filter(Boolean).join(' ')
+            || undefined
           }
-          className={clsx("form-input pl-8", {
-            "form-input-error": error,
-            "form-input-disabled": disabled,
+          className={clsx('form-input pl-8', {
+            'form-input-error': error,
+            'form-input-disabled': disabled,
           })}
           {...rest}
         />

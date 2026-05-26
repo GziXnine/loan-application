@@ -1,10 +1,10 @@
 /** @format */
 
-import Wizard from "./components/wizard/Wizard";
-import ResumeModal from "./components/wizard/ResumeModal";
-import useLoanStore from "./store/loanStore";
-import useAutoSave, { clearSavedState } from "./hooks/useAutoSave";
-import useFormPersistence from "./hooks/useFormPersistence";
+import Wizard from './components/wizard/Wizard';
+import ResumeModal from './components/wizard/ResumeModal';
+import useLoanStore from './store/loanStore';
+import useAutoSave, { clearSavedState } from './hooks/useAutoSave';
+import useFormPersistence from './hooks/useFormPersistence';
 
 /**
  * LendSwift Loan Application
@@ -141,7 +141,7 @@ function SuccessScreen() {
   const uuid = window.crypto.randomUUID ? window.crypto.randomUUID() : `LS-${Date.now().toString(36).toUpperCase()}`;
 
   const loanAmount = formData.step1.loanAmount || 0;
-  const loanType = formData.step1.loanType || "N/A";
+  const loanType = formData.step1.loanType || 'N/A';
 
   return (
     <div className="flex items-center justify-center min-h-[60vh]">
@@ -174,7 +174,7 @@ function SuccessScreen() {
           <div className="grid grid-cols-2 gap-4">
             <div>
               <span className="text-gray-500 block text-xs">Applicant Name</span>
-              <span className="font-medium text-gray-900">{formData.step2.fullName || "N/A"}</span>
+              <span className="font-medium text-gray-900">{formData.step2.fullName || 'N/A'}</span>
             </div>
             <div>
               <span className="text-gray-500 block text-xs">Loan Type</span>
@@ -182,17 +182,25 @@ function SuccessScreen() {
             </div>
             <div>
               <span className="text-gray-500 block text-xs">Requested Amount</span>
-              <span className="font-medium text-gray-900">₹{Number(loanAmount).toLocaleString('en-IN')}</span>
+              <span className="font-medium text-gray-900">
+                ₹
+                {Number(loanAmount).toLocaleString('en-IN')}
+              </span>
             </div>
             <div>
               <span className="text-gray-500 block text-xs">Tenure</span>
-              <span className="font-medium text-gray-900">{formData.step1.loanTenure || "N/A"} Months</span>
+              <span className="font-medium text-gray-900">
+                {formData.step1.loanTenure || 'N/A'}
+                {' '}
+                Months
+              </span>
             </div>
           </div>
         </div>
 
         <p className="text-sm text-gray-500 mb-8">
-          Application Reference:{" "}
+          Application Reference:
+          {' '}
           <span className="font-mono font-semibold text-primary-500">
             {uuid}
           </span>

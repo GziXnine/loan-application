@@ -1,13 +1,13 @@
 /** @format */
 
-import clsx from "clsx";
+import clsx from 'clsx';
 
 export default function ErrorMessage({
   id,
   message,
   className,
-  ariaLive = "polite",
-  role = "alert",
+  ariaLive = 'polite',
+  role = 'alert',
 }) {
   if (!message) return null;
 
@@ -15,7 +15,7 @@ export default function ErrorMessage({
     <p
       id={id}
       className={clsx(
-        "flex items-center gap-1 text-xs text-error-500 mt-1.5 animate-fade-in",
+        'flex items-center gap-1 text-xs text-error-500 mt-1.5 animate-fade-in',
         className,
       )}
       role={role}

@@ -1,8 +1,10 @@
 /** @format */
 
-import { forwardRef, useEffect, useId, useMemo, useRef, useState } from "react";
-import clsx from "clsx";
-import ErrorMessage from "./ErrorMessage";
+import {
+  forwardRef, useCallback, useEffect, useId, useMemo, useRef, useState,
+} from 'react';
+import clsx from 'clsx';
+import ErrorMessage from './ErrorMessage';
 
 /**
  * Select Component
@@ -13,19 +15,19 @@ import ErrorMessage from "./ErrorMessage";
  * - Label, help text, and error message support
  * - forwardRef for React Hook Form
  */
-const Select = forwardRef(function Select(
+const Select = forwardRef((
   {
     label,
     name,
     options = [],
-    placeholder = "Select an option",
+    placeholder = 'Select an option',
     helpText,
     error,
     required = false,
     disabled = false,
     className,
     id: customId,
-    variant = "native",
+    variant = 'native',
     value,
     defaultValue,
     onChange,
@@ -33,7 +35,7 @@ const Select = forwardRef(function Select(
     ...rest
   },
   ref,
-) {
+) => {
   const generatedId = useId();
   const selectId = customId || `select-${name || generatedId}`;
   const helpId = `${selectId}-help`;
@@ -42,7 +44,7 @@ const Select = forwardRef(function Select(
   const wrapperRef = useRef(null);
   const buttonRef = useRef(null);
 
-  const [internalValue, setInternalValue] = useState(defaultValue ?? "");
+  const [internalValue, setInternalValue] = useState(defaultValue ?? '');
   const isControlled = value !== undefined;
 
   const [isOpen, setIsOpen] = useState(false);
@@ -50,8 +52,7 @@ const Select = forwardRef(function Select(
 
   const currentValue = isControlled ? value : internalValue;
   const selectedOption = useMemo(
-    () =>
-      options.find((option) => String(option.value) === String(currentValue)),
+    () => options.find((option) => String(option.value) === String(currentValue)),
     [options, currentValue],
   );
 
@@ -66,13 +67,13 @@ const Select = forwardRef(function Select(
     return startIndex;
   };
 
-  const closeListbox = () => {
+  const closeListbox = useCallback(() => {
     setIsOpen(false);
     setFocusedIndex(-1);
     if (onBlur) {
       onBlur({ target: { name, value: currentValue } });
     }
-  };
+  }, [onBlur, name, currentValue]);
 
   const openListbox = (index) => {
     if (disabled) return;
@@ -98,31 +99,31 @@ const Select = forwardRef(function Select(
         closeListbox();
       }
     };
-    document.addEventListener("mousedown", handleOutside);
-    return () => document.removeEventListener("mousedown", handleOutside);
-  }, [isOpen]);
+    document.addEventListener('mousedown', handleOutside);
+    return () => document.removeEventListener('mousedown', handleOutside);
+  }, [isOpen, closeListbox]);
 
   useEffect(() => {
     if (!isControlled) {
-      setInternalValue(defaultValue ?? "");
+      setInternalValue(defaultValue ?? '');
     }
   }, [defaultValue, isControlled]);
 
   const handleButtonKeyDown = (event) => {
     if (disabled) return;
-    if (event.key === "ArrowDown") {
+    if (event.key === 'ArrowDown') {
       event.preventDefault();
       const nextIndex = getNextEnabledIndex(isOpen ? focusedIndex : -1, 1);
       if (!isOpen) openListbox(nextIndex);
       else setFocusedIndex(nextIndex);
     }
-    if (event.key === "ArrowUp") {
+    if (event.key === 'ArrowUp') {
       event.preventDefault();
       const nextIndex = getNextEnabledIndex(isOpen ? focusedIndex : 0, -1);
       if (!isOpen) openListbox(nextIndex);
       else setFocusedIndex(nextIndex);
     }
-    if (event.key === "Enter" || event.key === " ") {
+    if (event.key === 'Enter' || event.key === ' ') {
       event.preventDefault();
       if (!isOpen) {
         const nextIndex = getNextEnabledIndex(-1, 1);
@@ -131,39 +132,39 @@ const Select = forwardRef(function Select(
         selectOption(options[focusedIndex]);
       }
     }
-    if (event.key === "Escape") {
+    if (event.key === 'Escape') {
       event.preventDefault();
       closeListbox();
     }
   };
 
   const handleListKeyDown = (event) => {
-    if (event.key === "ArrowDown") {
+    if (event.key === 'ArrowDown') {
       event.preventDefault();
       setFocusedIndex(getNextEnabledIndex(focusedIndex, 1));
     }
-    if (event.key === "ArrowUp") {
+    if (event.key === 'ArrowUp') {
       event.preventDefault();
       setFocusedIndex(getNextEnabledIndex(focusedIndex, -1));
     }
-    if (event.key === "Enter" && focusedIndex >= 0) {
+    if (event.key === 'Enter' && focusedIndex >= 0) {
       event.preventDefault();
       selectOption(options[focusedIndex]);
     }
-    if (event.key === "Escape") {
+    if (event.key === 'Escape') {
       event.preventDefault();
       closeListbox();
       buttonRef.current?.focus();
     }
   };
 
-  if (variant === "custom") {
+  if (variant === 'custom') {
     return (
-      <div className={clsx("form-field", className)} ref={wrapperRef}>
+      <div className={clsx('form-field', className)} ref={wrapperRef}>
         {label && (
           <label
             htmlFor={selectId}
-            className={clsx("form-label", { "form-label-required": required })}
+            className={clsx('form-label', { 'form-label-required': required })}
           >
             {label}
           </label>
@@ -177,21 +178,18 @@ const Select = forwardRef(function Select(
           aria-haspopup="listbox"
           aria-expanded={isOpen}
           aria-controls={listboxId}
-          aria-invalid={error ? "true" : undefined}
           aria-describedby={
-            [error && errorId, helpText && helpId].filter(Boolean).join(" ") ||
-            undefined
+            [error && errorId, helpText && helpId].filter(Boolean).join(' ')
+            || undefined
           }
-          onClick={() =>
-            isOpen ? closeListbox() : openListbox(getNextEnabledIndex(-1, 1))
-          }
+          onClick={() => (isOpen ? closeListbox() : openListbox(getNextEnabledIndex(-1, 1)))}
           onKeyDown={handleButtonKeyDown}
           className={clsx(
-            "form-input flex items-center justify-between pr-10 text-left",
+            'form-input flex items-center justify-between pr-10 text-left',
             {
-              "form-input-error": error,
-              "form-input-disabled": disabled,
-              "text-gray-400": !selectedOption,
+              'form-input-error': error,
+              'form-input-disabled': disabled,
+              'text-gray-400': !selectedOption,
             },
           )}
         >
@@ -235,10 +233,11 @@ const Select = forwardRef(function Select(
                   onMouseEnter={() => setFocusedIndex(index)}
                   onMouseDown={(event) => event.preventDefault()}
                   onClick={() => selectOption(option)}
-                  className={clsx("px-4 py-2 text-sm cursor-pointer", {
-                    "bg-primary-50 text-primary-700": isSelected,
-                    "bg-surface-100": isFocused && !isSelected,
-                    "text-gray-400 cursor-not-allowed": option.disabled,
+                  onKeyDown={(e) => { if (e.key === 'Enter') selectOption(option); }}
+                  className={clsx('px-4 py-2 text-sm cursor-pointer', {
+                    'bg-primary-50 text-primary-700': isSelected,
+                    'bg-surface-100': isFocused && !isSelected,
+                    'text-gray-400 cursor-not-allowed': option.disabled,
                   })}
                 >
                   {option.label}
@@ -269,11 +268,11 @@ const Select = forwardRef(function Select(
   }
 
   return (
-    <div className={clsx("form-field", className)}>
+    <div className={clsx('form-field', className)}>
       {label && (
         <label
           htmlFor={selectId}
-          className={clsx("form-label", { "form-label-required": required })}
+          className={clsx('form-label', { 'form-label-required': required })}
         >
           {label}
         </label>
@@ -286,15 +285,15 @@ const Select = forwardRef(function Select(
           name={name}
           disabled={disabled}
           required={required}
-          aria-invalid={error ? "true" : undefined}
+          aria-invalid={error ? 'true' : undefined}
           aria-describedby={
-            [error && errorId, helpText && helpId].filter(Boolean).join(" ") ||
-            undefined
+            [error && errorId, helpText && helpId].filter(Boolean).join(' ')
+            || undefined
           }
-          className={clsx("form-input appearance-none pr-10 cursor-pointer", {
-            "form-input-error": error,
-            "form-input-disabled": disabled,
-            "text-gray-400": !currentValue,
+          className={clsx('form-input appearance-none pr-10 cursor-pointer', {
+            'form-input-error': error,
+            'form-input-disabled': disabled,
+            'text-gray-400': !currentValue,
           })}
           value={currentValue}
           onChange={(event) => {

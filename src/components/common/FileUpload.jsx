@@ -1,8 +1,8 @@
 /** @format */
 
-import { forwardRef } from "react";
-import { useDropzone } from "react-dropzone";
-import clsx from "clsx";
+import { forwardRef, useId } from 'react';
+import { useDropzone } from 'react-dropzone';
+import clsx from 'clsx';
 
 /**
  * FileUpload Component with Render Props Pattern
@@ -14,7 +14,7 @@ import clsx from "clsx";
  *   renderPreview={(files, onRemove) => <CustomPreview files={files} onRemove={onRemove} />}
  * />
  */
-const FileUpload = forwardRef(function FileUpload(
+const FileUpload = forwardRef((
   {
     label,
     name,
@@ -26,9 +26,9 @@ const FileUpload = forwardRef(function FileUpload(
     maxFiles = 3,
     maxSize = 5242880, // 5MB
     accept = {
-      "application/pdf": [".pdf"],
-      "image/jpeg": [".jpg", ".jpeg"],
-      "image/png": [".png"],
+      'application/pdf': ['.pdf'],
+      'image/jpeg': ['.jpg', '.jpeg'],
+      'image/png': ['.png'],
     },
     compressImages = true,
     compressionOptions = { maxWidth: 1600, maxHeight: 1600, quality: 0.8 },
@@ -37,9 +37,12 @@ const FileUpload = forwardRef(function FileUpload(
     renderPreview, // The render prop
   },
   ref,
-) {
+) => {
+  const generatedId = useId();
+  const inputId = name || generatedId;
+
   const compressImage = async (file) => {
-    if (!file.type.startsWith("image/")) return file;
+    if (!file.type.startsWith('image/')) return file;
 
     try {
       const img = await new Promise((resolve, reject) => {
@@ -49,9 +52,9 @@ const FileUpload = forwardRef(function FileUpload(
           URL.revokeObjectURL(url);
           resolve(image);
         };
-        image.onerror = (error) => {
+        image.onerror = (err) => {
           URL.revokeObjectURL(url);
-          reject(error);
+          reject(err);
         };
         image.src = url;
       });
@@ -61,21 +64,21 @@ const FileUpload = forwardRef(function FileUpload(
       const width = Math.round(img.width * scale);
       const height = Math.round(img.height * scale);
 
-      const canvas = document.createElement("canvas");
+      const canvas = document.createElement('canvas');
       canvas.width = width;
       canvas.height = height;
-      const ctx = canvas.getContext("2d");
+      const ctx = canvas.getContext('2d');
       ctx.drawImage(img, 0, 0, width, height);
 
       const blob = await new Promise((resolve) => {
-        canvas.toBlob(resolve, "image/jpeg", quality);
+        canvas.toBlob(resolve, 'image/jpeg', quality);
       });
 
       if (!blob) return file;
-      return new File([blob], file.name.replace(/\.[^.]+$/, ".jpg"), {
-        type: "image/jpeg",
+      return new File([blob], file.name.replace(/\.[^.]+$/, '.jpg'), {
+        type: 'image/jpeg',
       });
-    } catch (error) {
+    } catch (err) {
       return file;
     }
   };
@@ -85,9 +88,7 @@ const FileUpload = forwardRef(function FileUpload(
       if (!onChange) return;
 
       const processedFiles = await Promise.all(
-        acceptedFiles.map((file) =>
-          compressImages ? compressImage(file) : file,
-        ),
+        acceptedFiles.map((file) => (compressImages ? compressImage(file) : file)),
       );
 
       // Append new files up to the limit
@@ -107,10 +108,11 @@ const FileUpload = forwardRef(function FileUpload(
   };
 
   return (
-    <div className={clsx("form-field", className)}>
+    <div className={clsx('form-field', className)}>
       {label && (
         <label
-          className={clsx("form-label", { "form-label-required": required })}
+          htmlFor={inputId}
+          className={clsx('form-label', { 'form-label-required': required })}
         >
           {label}
         </label>
@@ -119,24 +121,28 @@ const FileUpload = forwardRef(function FileUpload(
       <div
         {...getRootProps()}
         className={clsx(
-          "border-2 border-dashed rounded-xl p-6 text-center cursor-pointer transition-colors",
+          'border-2 border-dashed rounded-xl p-6 text-center cursor-pointer transition-colors',
           {
-            "border-primary-500 bg-primary-50": isDragActive,
-            "border-surface-300 hover:border-primary-300 bg-white":
+            'border-primary-500 bg-primary-50': isDragActive,
+            'border-surface-300 hover:border-primary-300 bg-white':
               !isDragActive && !error,
-            "border-error-500 bg-error-50": error,
-            "opacity-50 cursor-not-allowed": disabled,
+            'border-error-500 bg-error-50': error,
+            'opacity-50 cursor-not-allowed': disabled,
           },
         )}
       >
-        <input {...getInputProps()} ref={ref} name={name} />
+        <input {...getInputProps()} ref={ref} name={name} id={inputId} />
         <p className="text-sm text-gray-600">
           {isDragActive
-            ? "Drop files here..."
-            : "Drag & drop files here, or click to select"}
+            ? 'Drop files here...'
+            : 'Drag & drop files here, or click to select'}
         </p>
         <p className="text-xs text-gray-400 mt-2">
-          PDF, JPG, PNG up to 5MB (Max {maxFiles} files)
+          PDF, JPG, PNG up to 5MB (Max
+          {' '}
+          {maxFiles}
+          {' '}
+          files)
         </p>
       </div>
 
