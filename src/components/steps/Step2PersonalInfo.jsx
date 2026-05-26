@@ -1,13 +1,13 @@
 /** @format */
 
-import { forwardRef, useImperativeHandle } from "react";
-import { useForm, Controller } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { getSchemaForStep } from "../../utils/schemaFactory";
-import useLoanStore from "../../store/loanStore";
-import Input from "../common/Input";
-import Select from "../common/Select";
-import RadioGroup from "../common/RadioGroup";
+import { forwardRef, useImperativeHandle } from 'react';
+import { useForm, Controller } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { getSchemaForStep } from '../../utils/schemaFactory';
+import useLoanStore from '../../store/loanStore';
+import Input from '../common/Input';
+import Select from '../common/Select';
+import RadioGroup from '../common/RadioGroup';
 
 const Step2PersonalInfo = forwardRef((props, ref) => {
   const stepData = useLoanStore((state) => state.getStepData(2));
@@ -24,7 +24,7 @@ const Step2PersonalInfo = forwardRef((props, ref) => {
   } = useForm({
     resolver: zodResolver(getSchemaForStep(2, formData)),
     defaultValues: stepData,
-    mode: "onChange",
+    mode: 'onChange',
   });
 
   useImperativeHandle(ref, () => ({
@@ -38,16 +38,16 @@ const Step2PersonalInfo = forwardRef((props, ref) => {
   }));
 
   const genderOptions = [
-    { value: "male", label: "Male" },
-    { value: "female", label: "Female" },
-    { value: "other", label: "Other" },
+    { value: 'male', label: 'Male' },
+    { value: 'female', label: 'Female' },
+    { value: 'other', label: 'Other' },
   ];
 
   const maritalStatusOptions = [
-    { value: "single", label: "Single" },
-    { value: "married", label: "Married" },
-    { value: "divorced", label: "Divorced" },
-    { value: "widowed", label: "Widowed" },
+    { value: 'single', label: 'Single' },
+    { value: 'married', label: 'Married' },
+    { value: 'divorced', label: 'Divorced' },
+    { value: 'widowed', label: 'Widowed' },
   ];
 
   return (
@@ -67,14 +67,14 @@ const Step2PersonalInfo = forwardRef((props, ref) => {
           <Input.Label required>Full Name</Input.Label>
           <Input.Field
             placeholder="As per PAN card"
-            {...register("fullName")}
+            {...register('fullName')}
           />
           <Input.Error />
         </Input>
 
         <Input error={errors.dateOfBirth?.message}>
           <Input.Label required>Date of Birth</Input.Label>
-          <Input.Field type="date" {...register("dateOfBirth")} />
+          <Input.Field type="date" {...register('dateOfBirth')} />
           <Input.Error />
         </Input>
       </div>
@@ -102,7 +102,7 @@ const Step2PersonalInfo = forwardRef((props, ref) => {
           <Input.Field
             type="email"
             placeholder="your.email@example.com"
-            {...register("email")}
+            {...register('email')}
           />
           <Input.Error />
         </Input>
@@ -113,7 +113,7 @@ const Step2PersonalInfo = forwardRef((props, ref) => {
           required
           variant="custom"
           error={errors.maritalStatus?.message}
-          {...register("maritalStatus")}
+          {...register('maritalStatus')}
         />
       </div>
 
@@ -124,7 +124,7 @@ const Step2PersonalInfo = forwardRef((props, ref) => {
             type="tel"
             placeholder="10-digit mobile number"
             leftIcon={<span className="text-sm">+91</span>}
-            {...register("mobileNumber")}
+            {...register('mobileNumber')}
           />
           <Input.Error />
         </Input>
@@ -135,7 +135,7 @@ const Step2PersonalInfo = forwardRef((props, ref) => {
             type="tel"
             placeholder="10-digit mobile number"
             leftIcon={<span className="text-sm">+91</span>}
-            {...register("alternateMobile")}
+            {...register('alternateMobile')}
           />
           <Input.Error />
         </Input>

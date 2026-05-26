@@ -1,14 +1,15 @@
 /** @format */
 
-import { forwardRef, useEffect, useImperativeHandle, useMemo } from "react";
-import { useForm, Controller } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { getSchemaForStep } from "../../utils/schemaFactory";
-import useLoanStore from "../../store/loanStore";
-import RadioGroup from "../common/RadioGroup";
-import CurrencyInput from "../common/CurrencyInput";
-import Select from "../common/Select";
-import Input from "../common/Input";
+import {
+  forwardRef, useEffect, useImperativeHandle, useMemo,
+} from 'react';
+import { useForm, Controller } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { getSchemaForStep } from '../../utils/schemaFactory';
+import useLoanStore from '../../store/loanStore';
+import RadioGroup from '../common/RadioGroup';
+import CurrencyInput from '../common/CurrencyInput';
+import Select from '../common/Select';
 
 const Step1LoanType = forwardRef((props, ref) => {
   const stepData = useLoanStore((state) => state.getStepData(1));
@@ -31,11 +32,11 @@ const Step1LoanType = forwardRef((props, ref) => {
   } = useForm({
     resolver,
     defaultValues: stepData,
-    mode: "onChange",
+    mode: 'onChange',
   });
 
-  const loanType = watch("loanType");
-  const loanTenureValue = watch("loanTenure");
+  const loanType = watch('loanType');
+  const loanTenureValue = watch('loanTenure');
 
   const loanConstraints = {
     personal: {
@@ -58,8 +59,7 @@ const Step1LoanType = forwardRef((props, ref) => {
     },
   };
 
-  const currentConstraints =
-    loanConstraints[loanType] || loanConstraints.personal;
+  const currentConstraints = loanConstraints[loanType] || loanConstraints.personal;
 
   const buildTenureOptions = (min, max) => {
     const options = [];
@@ -85,22 +85,22 @@ const Step1LoanType = forwardRef((props, ref) => {
 
   const loanTypeOptions = [
     {
-      value: "personal",
-      label: "Personal Loan",
-      icon: "👤",
-      description: "For personal expenses",
+      value: 'personal',
+      label: 'Personal Loan',
+      icon: '👤',
+      description: 'For personal expenses',
     },
     {
-      value: "home",
-      label: "Home Loan",
-      icon: "🏠",
-      description: "For buying a house",
+      value: 'home',
+      label: 'Home Loan',
+      icon: '🏠',
+      description: 'For buying a house',
     },
     {
-      value: "business",
-      label: "Business Loan",
-      icon: "💼",
-      description: "For business expansion",
+      value: 'business',
+      label: 'Business Loan',
+      icon: '💼',
+      description: 'For business expansion',
     },
   ];
 
@@ -114,10 +114,10 @@ const Step1LoanType = forwardRef((props, ref) => {
     const tenure = Number(loanTenureValue);
     if (Number.isNaN(tenure)) return;
     if (
-      tenure < currentConstraints.minTenure ||
-      tenure > currentConstraints.maxTenure
+      tenure < currentConstraints.minTenure
+      || tenure > currentConstraints.maxTenure
     ) {
-      setValue("loanTenure", "");
+      setValue('loanTenure', '');
     }
   }, [
     loanTenureValue,
@@ -127,14 +127,14 @@ const Step1LoanType = forwardRef((props, ref) => {
   ]);
 
   const loanPurposeOptions = [
-    { value: "debt_consolidation", label: "Debt Consolidation" },
-    { value: "home_improvement", label: "Home Improvement" },
-    { value: "medical_emergency", label: "Medical Emergency" },
-    { value: "education", label: "Education" },
-    { value: "wedding", label: "Wedding" },
-    { value: "business_expansion", label: "Business Expansion" },
-    { value: "vehicle_purchase", label: "Vehicle Purchase" },
-    { value: "other", label: "Other" },
+    { value: 'debt_consolidation', label: 'Debt Consolidation' },
+    { value: 'home_improvement', label: 'Home Improvement' },
+    { value: 'medical_emergency', label: 'Medical Emergency' },
+    { value: 'education', label: 'Education' },
+    { value: 'wedding', label: 'Wedding' },
+    { value: 'business_expansion', label: 'Business Expansion' },
+    { value: 'vehicle_purchase', label: 'Vehicle Purchase' },
+    { value: 'other', label: 'Other' },
   ];
 
   return (
@@ -174,7 +174,7 @@ const Step1LoanType = forwardRef((props, ref) => {
               required
               min={currentConstraints.minAmount}
               max={currentConstraints.maxAmount}
-              helpText={`Range: ₹${currentConstraints.minAmount.toLocaleString("en-IN")} - ₹${currentConstraints.maxAmount.toLocaleString("en-IN")}`}
+              helpText={`Range: ₹${currentConstraints.minAmount.toLocaleString('en-IN')} - ₹${currentConstraints.maxAmount.toLocaleString('en-IN')}`}
               error={errors.loanAmount?.message}
               {...field}
             />
@@ -187,7 +187,7 @@ const Step1LoanType = forwardRef((props, ref) => {
           required
           helpText={`Allowed: ${currentConstraints.minTenure}-${currentConstraints.maxTenure} months`}
           error={errors.loanTenure?.message}
-          {...register("loanTenure")}
+          {...register('loanTenure')}
         />
       </div>
 
@@ -199,7 +199,7 @@ const Step1LoanType = forwardRef((props, ref) => {
           required
           variant="custom"
           error={errors.loanPurpose?.message}
-          {...register("loanPurpose")}
+          {...register('loanPurpose')}
         />
       </div>
     </div>

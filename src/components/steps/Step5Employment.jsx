@@ -1,19 +1,19 @@
 /** @format */
 
-import { forwardRef, useImperativeHandle, useMemo } from "react";
-import { useForm, Controller } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { getSchemaForStep } from "../../utils/schemaFactory";
-import useLoanStore from "../../store/loanStore";
-import RadioGroup from "../common/RadioGroup";
-import Input from "../common/Input";
-import CurrencyInput from "../common/CurrencyInput";
+import { forwardRef, useImperativeHandle, useMemo } from 'react';
+import { useForm, Controller } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { getSchemaForStep } from '../../utils/schemaFactory';
+import useLoanStore from '../../store/loanStore';
+import RadioGroup from '../common/RadioGroup';
+import Input from '../common/Input';
+import CurrencyInput from '../common/CurrencyInput';
 
 const Step5Employment = forwardRef((props, ref) => {
   const stepData = useLoanStore((state) => state.getStepData(5));
   const updateStepData = useLoanStore((state) => state.updateStepData);
   const formData = useLoanStore((state) => state.formData);
-  const loanType = formData.step1.loanType;
+  const { loanType } = formData.step1;
 
   const resolver = useMemo(
     () => zodResolver(getSchemaForStep(5, formData)),
@@ -30,10 +30,10 @@ const Step5Employment = forwardRef((props, ref) => {
   } = useForm({
     resolver,
     defaultValues: stepData,
-    mode: "onChange",
+    mode: 'onChange',
   });
 
-  const employmentType = watch("employmentType");
+  const employmentType = watch('employmentType');
 
   useImperativeHandle(ref, () => ({
     validate: async () => {
@@ -47,22 +47,22 @@ const Step5Employment = forwardRef((props, ref) => {
 
   const employmentOptions = [
     {
-      value: "salaried",
-      label: "Salaried",
-      icon: "👔",
-      description: "Employed by a company",
+      value: 'salaried',
+      label: 'Salaried',
+      icon: '👔',
+      description: 'Employed by a company',
     },
     {
-      value: "self_employed",
-      label: "Self-Employed",
-      icon: "💼",
-      description: "Freelancer or consultant",
+      value: 'self_employed',
+      label: 'Self-Employed',
+      icon: '💼',
+      description: 'Freelancer or consultant',
     },
     {
-      value: "business_owner",
-      label: "Business Owner",
-      icon: "🏢",
-      description: "Registered business entity",
+      value: 'business_owner',
+      label: 'Business Owner',
+      icon: '🏢',
+      description: 'Registered business entity',
     },
   ];
 
@@ -92,19 +92,19 @@ const Step5Employment = forwardRef((props, ref) => {
         )}
       />
 
-      {loanType === "business" && employmentType === "salaried" && (
+      {loanType === 'business' && employmentType === 'salaried' && (
         <div className="border border-warning-200 bg-warning-50 text-warning-700 rounded-xl p-4 text-sm">
           Business loans require Self-Employed or Business Owner status.
         </div>
       )}
 
-      {employmentType === "salaried" && (
+      {employmentType === 'salaried' && (
         <div className="space-y-6 animate-fade-in pt-4">
           <Input error={errors.companyName?.message}>
             <Input.Label required>Company Name</Input.Label>
             <Input.Field
               placeholder="e.g. Tata Consultancy Services"
-              {...register("companyName")}
+              {...register('companyName')}
             />
             <Input.Error />
           </Input>
@@ -114,7 +114,7 @@ const Step5Employment = forwardRef((props, ref) => {
               <Input.Label required>Designation</Input.Label>
               <Input.Field
                 placeholder="e.g. Software Engineer"
-                {...register("designation")}
+                {...register('designation')}
               />
               <Input.Error />
             </Input>
@@ -125,7 +125,7 @@ const Step5Employment = forwardRef((props, ref) => {
                 type="number"
                 min={0}
                 placeholder="e.g. 5"
-                {...register("workExperience")}
+                {...register('workExperience')}
               />
               <Input.Error />
             </Input>
@@ -147,14 +147,14 @@ const Step5Employment = forwardRef((props, ref) => {
         </div>
       )}
 
-      {employmentType === "self_employed" && (
+      {employmentType === 'self_employed' && (
         <div className="space-y-6 animate-fade-in pt-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <Input error={errors.businessName?.message}>
               <Input.Label required>Business Name</Input.Label>
               <Input.Field
                 placeholder="e.g. Sharma Traders"
-                {...register("businessName")}
+                {...register('businessName')}
               />
               <Input.Error />
             </Input>
@@ -163,7 +163,7 @@ const Step5Employment = forwardRef((props, ref) => {
               <Input.Label required>Business Type</Input.Label>
               <Input.Field
                 placeholder="e.g. Retail, Manufacturing, Services"
-                {...register("businessType")}
+                {...register('businessType')}
               />
               <Input.Error />
             </Input>
@@ -175,7 +175,7 @@ const Step5Employment = forwardRef((props, ref) => {
               type="number"
               min={0}
               placeholder="e.g. 3"
-              {...register("businessVintage")}
+              {...register('businessVintage')}
             />
             <Input.Error />
           </Input>
@@ -214,7 +214,7 @@ const Step5Employment = forwardRef((props, ref) => {
               <Input.Label>Company Registration Number (Optional)</Input.Label>
               <Input.Field
                 placeholder="e.g. U74999MH..."
-                {...register("companyRegistrationNumber")}
+                {...register('companyRegistrationNumber')}
               />
               <Input.Error />
             </Input>
@@ -223,7 +223,7 @@ const Step5Employment = forwardRef((props, ref) => {
               <Input.Label>GST Number (Optional)</Input.Label>
               <Input.Field
                 placeholder="15-digit GSTIN"
-                {...register("gstNumber")}
+                {...register('gstNumber')}
               />
               <Input.Error />
             </Input>
@@ -231,14 +231,14 @@ const Step5Employment = forwardRef((props, ref) => {
         </div>
       )}
 
-      {employmentType === "business_owner" && (
+      {employmentType === 'business_owner' && (
         <div className="space-y-6 animate-fade-in pt-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <Input error={errors.businessName?.message}>
               <Input.Label required>Business Name</Input.Label>
               <Input.Field
                 placeholder="e.g. LendSwift Retail Pvt Ltd"
-                {...register("businessName")}
+                {...register('businessName')}
               />
               <Input.Error />
             </Input>
@@ -247,7 +247,7 @@ const Step5Employment = forwardRef((props, ref) => {
               <Input.Label required>Business Type</Input.Label>
               <Input.Field
                 placeholder="e.g. Retail, Manufacturing, Services"
-                {...register("businessType")}
+                {...register('businessType')}
               />
               <Input.Error />
             </Input>
@@ -260,7 +260,7 @@ const Step5Employment = forwardRef((props, ref) => {
                 type="number"
                 min={0}
                 placeholder="e.g. 5"
-                {...register("businessVintage")}
+                {...register('businessVintage')}
               />
               <Input.Error />
             </Input>
@@ -298,7 +298,7 @@ const Step5Employment = forwardRef((props, ref) => {
               <Input.Label required>Company Registration Number</Input.Label>
               <Input.Field
                 placeholder="e.g. U74999MH..."
-                {...register("companyRegistrationNumber")}
+                {...register('companyRegistrationNumber')}
               />
               <Input.Error />
             </Input>
@@ -307,7 +307,7 @@ const Step5Employment = forwardRef((props, ref) => {
               <Input.Label required>GST Number</Input.Label>
               <Input.Field
                 placeholder="15-digit GSTIN"
-                {...register("gstNumber")}
+                {...register('gstNumber')}
               />
               <Input.Error />
             </Input>

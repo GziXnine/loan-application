@@ -1,7 +1,9 @@
-import { forwardRef, useImperativeHandle, useEffect, useMemo, useState } from 'react';
+import {
+  forwardRef, useImperativeHandle, useEffect, useMemo, useState,
+} from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { getSchemaForStep } from "../../utils/schemaFactory";
+import { getSchemaForStep } from '../../utils/schemaFactory';
 import useLoanStore from '../../store/loanStore';
 import Input from '../common/Input';
 import Select from '../common/Select';
@@ -39,7 +41,9 @@ const Step4AddressDetails = forwardRef((props, ref) => {
   const isRented = residenceType === 'rented';
   const [stateEdited, setStateEdited] = useState(false);
 
-  const { city, state, postOffice, isLoading, error: pincodeError } = usePinCodeLookup(pincode);
+  const {
+    city, state, postOffice, isLoading, error: pincodeError,
+  } = usePinCodeLookup(pincode);
 
   useEffect(() => {
     if (city) {
@@ -73,12 +77,12 @@ const Step4AddressDetails = forwardRef((props, ref) => {
       const value = Number(yearsAtCurrentAddress);
       return !Number.isNaN(value) && value < 1;
     },
-    [yearsAtCurrentAddress]
+    [yearsAtCurrentAddress],
   );
 
   const showStateMismatchWarning = useMemo(
     () => stateEdited && state && stateValue && stateValue.toLowerCase() !== state.toLowerCase(),
-    [stateValue, state, stateEdited]
+    [stateValue, state, stateEdited],
   );
 
   useImperativeHandle(ref, () => ({
@@ -144,13 +148,19 @@ const Step4AddressDetails = forwardRef((props, ref) => {
           />
           <Input.Error />
           {showStateMismatchWarning && (
-            <p className="text-xs text-warning-600 mt-1">Pincode suggests {state}. Please confirm.</p>
+            <p className="text-xs text-warning-600 mt-1">
+              Pincode suggests
+              {state}
+              . Please confirm.
+            </p>
           )}
         </Input>
 
         <Input error={errors.pincode?.message || pincodeError}>
           <Input.Label required>
-            Pincode {isLoading && <span className="text-2xs text-primary-500 font-normal ml-2 animate-pulse">(Looking up...)</span>}
+            Pincode
+            {' '}
+            {isLoading && <span className="text-2xs text-primary-500 font-normal ml-2 animate-pulse">(Looking up...)</span>}
           </Input.Label>
           <Input.Field
             type="text"
@@ -161,7 +171,10 @@ const Step4AddressDetails = forwardRef((props, ref) => {
           />
           <Input.Error />
           {postOffice && !errors.pincode && !pincodeError && (
-            <p className="text-xs text-gray-500 mt-1">Post Office: {postOffice}</p>
+            <p className="text-xs text-gray-500 mt-1">
+              Post Office:
+              {postOffice}
+            </p>
           )}
         </Input>
       </div>

@@ -7,13 +7,111 @@ import {
   useMemo,
   useRef,
   useState,
-} from "react";
-import { useForm, Controller } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { getSchemaForStep } from "../../utils/schemaFactory";
-import useLoanStore from "../../store/loanStore";
-import FileUpload from "../common/FileUpload";
-import SignatureCanvas from "../common/SignatureCanvas";
+} from 'react';
+import { useForm, Controller } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { getSchemaForStep } from '../../utils/schemaFactory';
+import useLoanStore from '../../store/loanStore';
+import FileUpload from '../common/FileUpload';
+import SignatureCanvas from '../common/SignatureCanvas';
+
+// Helper component to display selected files
+function FilePreviewItem({ file, onRemove }) {
+  const [previewUrl, setPreviewUrl] = useState(null);
+
+  useEffect(() => {
+    if (file.type.startsWith('image/')) {
+      const url = URL.createObjectURL(file);
+      setPreviewUrl(url);
+      return () => URL.revokeObjectURL(url);
+    }
+    setPreviewUrl(null);
+    return undefined;
+  }, [file]);
+
+  const isPdf = file.type === 'application/pdf';
+
+  return (
+    <li className="flex items-center justify-between p-2 text-sm bg-white border border-surface-200 rounded-lg shadow-sm">
+      <div className="flex items-center gap-3 min-w-0">
+        {previewUrl ? (
+          <img
+            src={previewUrl}
+            alt={file.name}
+            className="w-10 h-10 rounded-lg object-cover"
+          />
+        ) : (
+          <div className="w-10 h-10 rounded-lg bg-surface-100 flex items-center justify-center text-gray-400">
+            {isPdf ? (
+              <span className="text-xs font-semibold text-error-600">
+                PDF
+              </span>
+            ) : (
+              <svg
+                className="w-5 h-5"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M7 7h10M7 12h10M7 17h6M5 3h14a2 2 0 012 2v14a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2z"
+                />
+              </svg>
+            )}
+          </div>
+        )}
+        <div className="min-w-0">
+          <span className="truncate block max-w-[220px] text-gray-700">
+            {file.name}
+          </span>
+          <span className="text-xs text-gray-400">
+            {(file.size / 1024 / 1024).toFixed(2)}
+            {' '}
+            MB
+          </span>
+        </div>
+      </div>
+      <button
+        type="button"
+        onClick={onRemove}
+        className="text-error-500 hover:text-error-700 p-1"
+        title="Remove file"
+      >
+        <svg
+          className="w-4 h-4"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M6 18L18 6M6 6l12 12"
+          />
+        </svg>
+      </button>
+    </li>
+  );
+}
+
+function FilePreview({ files, onRemove }) {
+  if (!files || files.length === 0) return null;
+  return (
+    <ul className="mt-3 space-y-2">
+      {Array.from(files).map((file, index) => (
+        <FilePreviewItem
+          key={file.name}
+          file={file}
+          onRemove={() => onRemove(index)}
+        />
+      ))}
+    </ul>
+  );
+}
 
 const Step7Documents = forwardRef((props, ref) => {
   const stepData = useLoanStore((state) => state.getStepData(7));
@@ -29,10 +127,10 @@ const Step7Documents = forwardRef((props, ref) => {
   const signatureRef = useRef(null);
   const statusTimersRef = useRef({});
   const [docStatus, setDocStatus] = useState({
-    identityProof: "pending",
-    addressProof: "pending",
-    incomeProof: "pending",
-    additionalDocs: "pending",
+    identityProof: 'pending',
+    addressProof: 'pending',
+    incomeProof: 'pending',
+    additionalDocs: 'pending',
   });
 
   const formData = useLoanStore((state) => state.formData);
@@ -48,46 +146,45 @@ const Step7Documents = forwardRef((props, ref) => {
   } = useForm({
     resolver: zodResolver(getSchemaForStep(7, formData)),
     defaultValues: stepData,
-    mode: "onChange",
+    mode: 'onChange',
   });
 
-  const identityProof = watch("identityProof");
-  const addressProof = watch("addressProof");
-  const incomeProof = watch("incomeProof");
-  const additionalDocs = watch("additionalDocs");
+  const identityProof = watch('identityProof');
+  const addressProof = watch('addressProof');
+  const incomeProof = watch('incomeProof');
+  const additionalDocs = watch('additionalDocs');
 
   const requiresAdditionalDocs = useMemo(
-    () =>
-      loanType === "home" ||
-      loanType === "business" ||
-      ["self_employed", "business_owner"].includes(employmentType),
+    () => loanType === 'home'
+      || loanType === 'business'
+      || ['self_employed', 'business_owner'].includes(employmentType),
     [loanType, employmentType],
   );
 
   const documentRequirements = useMemo(
     () => [
       {
-        key: "identityProof",
+        key: 'identityProof',
         label: isPanVerified
-          ? "Identity Proof (Optional - PAN verified)"
-          : "Identity Proof (PAN/Aadhaar/Passport)",
+          ? 'Identity Proof (Optional - PAN verified)'
+          : 'Identity Proof (PAN/Aadhaar/Passport)',
         required: !isPanVerified,
       },
       {
-        key: "addressProof",
-        label: "Address Proof (Utility Bill/Rental Agreement)",
+        key: 'addressProof',
+        label: 'Address Proof (Utility Bill/Rental Agreement)',
         required: true,
       },
       {
-        key: "incomeProof",
-        label: "Income Proof (Bank Statement/Salary Slips)",
+        key: 'incomeProof',
+        label: 'Income Proof (Bank Statement/Salary Slips)',
         required: true,
       },
       {
-        key: "additionalDocs",
+        key: 'additionalDocs',
         label: requiresAdditionalDocs
-          ? "Additional Documents (Property/Business Proofs)"
-          : "Additional Documents (Optional)",
+          ? 'Additional Documents (Property/Business Proofs)'
+          : 'Additional Documents (Optional)',
         required: requiresAdditionalDocs,
       },
     ],
@@ -100,52 +197,49 @@ const Step7Documents = forwardRef((props, ref) => {
     }
 
     if (!files || files.length === 0) {
-      setDocStatus((prev) => ({ ...prev, [key]: "pending" }));
+      setDocStatus((prev) => ({ ...prev, [key]: 'pending' }));
       return;
     }
 
-    setDocStatus((prev) => ({ ...prev, [key]: "uploaded" }));
+    setDocStatus((prev) => ({ ...prev, [key]: 'uploaded' }));
     statusTimersRef.current[key] = setTimeout(() => {
-      setDocStatus((prev) => ({ ...prev, [key]: "verified" }));
+      setDocStatus((prev) => ({ ...prev, [key]: 'verified' }));
     }, 1000);
   };
 
   useEffect(
-    () => updateStatusFor("identityProof", identityProof),
+    () => updateStatusFor('identityProof', identityProof),
     [identityProof],
   );
   useEffect(
-    () => updateStatusFor("addressProof", addressProof),
+    () => updateStatusFor('addressProof', addressProof),
     [addressProof],
   );
-  useEffect(() => updateStatusFor("incomeProof", incomeProof), [incomeProof]);
+  useEffect(() => updateStatusFor('incomeProof', incomeProof), [incomeProof]);
   useEffect(
-    () => updateStatusFor("additionalDocs", additionalDocs),
+    () => updateStatusFor('additionalDocs', additionalDocs),
     [additionalDocs],
   );
 
   useEffect(() => {
-    if (identityProof && identityProof.length > 0) clearErrors("identityProof");
+    if (identityProof && identityProof.length > 0) clearErrors('identityProof');
   }, [identityProof, clearErrors]);
 
   useEffect(() => {
-    if (addressProof && addressProof.length > 0) clearErrors("addressProof");
+    if (addressProof && addressProof.length > 0) clearErrors('addressProof');
   }, [addressProof, clearErrors]);
 
   useEffect(() => {
-    if (incomeProof && incomeProof.length > 0) clearErrors("incomeProof");
+    if (incomeProof && incomeProof.length > 0) clearErrors('incomeProof');
   }, [incomeProof, clearErrors]);
 
   useEffect(() => {
-    if (additionalDocs && additionalDocs.length > 0)
-      clearErrors("additionalDocs");
+    if (additionalDocs && additionalDocs.length > 0) clearErrors('additionalDocs');
   }, [additionalDocs, clearErrors]);
 
   useEffect(
     () => () => {
-      Object.values(statusTimersRef.current).forEach((timer) =>
-        clearTimeout(timer),
-      );
+      Object.values(statusTimersRef.current).forEach((timer) => clearTimeout(timer));
     },
     [],
   );
@@ -158,12 +252,12 @@ const Step7Documents = forwardRef((props, ref) => {
 
       documentRequirements.forEach((doc) => {
         if (
-          doc.required &&
-          (!values[doc.key] || values[doc.key].length === 0)
+          doc.required
+          && (!values[doc.key] || values[doc.key].length === 0)
         ) {
           setError(doc.key, {
-            type: "manual",
-            message: "This document is required",
+            type: 'manual',
+            message: 'This document is required',
           });
           hasManualErrors = true;
         } else {
@@ -175,11 +269,11 @@ const Step7Documents = forwardRef((props, ref) => {
         const sigData = signatureRef.current.getSignature();
         if (sigData) {
           values.signature = sigData;
-          clearErrors("signature");
+          clearErrors('signature');
         } else {
-          setError("signature", {
-            type: "manual",
-            message: "Signature is required",
+          setError('signature', {
+            type: 'manual',
+            message: 'Signature is required',
           });
           hasManualErrors = true;
         }
@@ -192,110 +286,13 @@ const Step7Documents = forwardRef((props, ref) => {
     },
   }));
 
-  // Helper component to display selected files
-  const FilePreviewItem = ({ file, onRemove }) => {
-    const [previewUrl, setPreviewUrl] = useState(null);
-
-    useEffect(() => {
-      if (file.type.startsWith("image/")) {
-        const url = URL.createObjectURL(file);
-        setPreviewUrl(url);
-        return () => URL.revokeObjectURL(url);
-      }
-      setPreviewUrl(null);
-      return undefined;
-    }, [file]);
-
-    const isPdf = file.type === "application/pdf";
-
-    return (
-      <li className="flex items-center justify-between p-2 text-sm bg-white border border-surface-200 rounded-lg shadow-sm">
-        <div className="flex items-center gap-3 min-w-0">
-          {previewUrl ? (
-            <img
-              src={previewUrl}
-              alt={file.name}
-              className="w-10 h-10 rounded-lg object-cover"
-            />
-          ) : (
-            <div className="w-10 h-10 rounded-lg bg-surface-100 flex items-center justify-center text-gray-400">
-              {isPdf ? (
-                <span className="text-xs font-semibold text-error-600">
-                  PDF
-                </span>
-              ) : (
-                <svg
-                  className="w-5 h-5"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M7 7h10M7 12h10M7 17h6M5 3h14a2 2 0 012 2v14a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2z"
-                  />
-                </svg>
-              )}
-            </div>
-          )}
-          <div className="min-w-0">
-            <span className="truncate block max-w-[220px] text-gray-700">
-              {file.name}
-            </span>
-            <span className="text-xs text-gray-400">
-              {(file.size / 1024 / 1024).toFixed(2)} MB
-            </span>
-          </div>
-        </div>
-        <button
-          type="button"
-          onClick={onRemove}
-          className="text-error-500 hover:text-error-700 p-1"
-          title="Remove file"
-        >
-          <svg
-            className="w-4 h-4"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M6 18L18 6M6 6l12 12"
-            />
-          </svg>
-        </button>
-      </li>
-    );
-  };
-
-  const FilePreview = ({ files, onRemove }) => {
-    if (!files || files.length === 0) return null;
-    return (
-      <ul className="mt-3 space-y-2">
-        {Array.from(files).map((file, index) => (
-          <FilePreviewItem
-            key={`${file.name}-${index}`}
-            file={file}
-            onRemove={() => onRemove(index)}
-          />
-        ))}
-      </ul>
-    );
-  };
-
   const statusBadge = (status) => {
-    if (status === "verified") return "badge-success";
-    if (status === "uploaded") return "badge-primary";
-    return "badge-warning";
+    if (status === 'verified') return 'badge-success';
+    if (status === 'uploaded') return 'badge-primary';
+    return 'badge-warning';
   };
 
-  const formatStatus = (status) =>
-    status.charAt(0).toUpperCase() + status.slice(1);
+  const formatStatus = (status) => status.charAt(0).toUpperCase() + status.slice(1);
 
   return (
     <div className="space-y-6">
@@ -341,8 +338,8 @@ const Step7Documents = forwardRef((props, ref) => {
               <FileUpload
                 label={
                   isPanVerified
-                    ? "Identity Proof (Optional - PAN verified)"
-                    : "Identity Proof (PAN/Aadhaar/Passport)"
+                    ? 'Identity Proof (Optional - PAN verified)'
+                    : 'Identity Proof (PAN/Aadhaar/Passport)'
                 }
                 required={!isPanVerified}
                 error={errors.identityProof?.message}
@@ -402,8 +399,8 @@ const Step7Documents = forwardRef((props, ref) => {
               <FileUpload
                 label={
                   requiresAdditionalDocs
-                    ? "Additional Documents (Property/Business Proofs)"
-                    : "Additional Documents (Optional)"
+                    ? 'Additional Documents (Property/Business Proofs)'
+                    : 'Additional Documents (Optional)'
                 }
                 required={requiresAdditionalDocs}
                 error={errors.additionalDocs?.message}
@@ -433,7 +430,7 @@ const Step7Documents = forwardRef((props, ref) => {
               error={errors.signature?.message}
               onEnd={(data) => {
                 field.onChange(data);
-                if (data) clearErrors("signature");
+                if (data) clearErrors('signature');
               }}
             />
           )}

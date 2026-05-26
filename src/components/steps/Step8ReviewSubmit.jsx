@@ -1,12 +1,27 @@
 /** @format */
 
-import { forwardRef, useImperativeHandle } from "react";
-import { useForm, Controller } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { getSchemaForStep } from "../../utils/schemaFactory";
-import useLoanStore from "../../store/loanStore";
-import Checkbox from "../common/Checkbox";
-import { buildPreApprovalSummary, formatINR } from "../../utils/emiCalculator";
+import { forwardRef, useImperativeHandle } from 'react';
+import { useForm, Controller } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { getSchemaForStep } from '../../utils/schemaFactory';
+import useLoanStore from '../../store/loanStore';
+import Checkbox from '../common/Checkbox';
+import { buildPreApprovalSummary, formatINR } from '../../utils/emiCalculator';
+
+function SectionHeader({ title, stepIndex, onEdit }) {
+  return (
+    <div className="flex justify-between items-center mb-3 pb-2 border-b border-surface-200">
+      <h4 className="font-heading font-semibold text-gray-800">{title}</h4>
+      <button
+        type="button"
+        onClick={() => onEdit(stepIndex)}
+        className="text-sm text-primary-600 hover:text-primary-800 font-medium transition-colors"
+      >
+        Edit
+      </button>
+    </div>
+  );
+}
 
 const Step8ReviewSubmit = forwardRef((props, ref) => {
   const stepData = useLoanStore((state) => state.getStepData(8));
@@ -20,20 +35,19 @@ const Step8ReviewSubmit = forwardRef((props, ref) => {
     getValues,
     setError,
     clearErrors,
-    watch,
     formState: { errors },
   } = useForm({
     resolver: zodResolver(getSchemaForStep(8, formData)),
     defaultValues: stepData,
-    mode: "onChange",
+    mode: 'onChange',
   });
 
   const loanAmount = Number(formData.step1.loanAmount) || 0;
   const tenureMonths = Number(formData.step1.loanTenure) || 0;
-  const loanType = formData.step1.loanType || "personal";
+  const loanType = formData.step1.loanType || 'personal';
 
   let monthlyIncome = 0;
-  if (formData.step5.employmentType === "salaried") {
+  if (formData.step5.employmentType === 'salaried') {
     monthlyIncome = Number(formData.step5.monthlyIncome) || 0;
   } else {
     monthlyIncome = Number(formData.step5.monthlyProfit) || 0;
@@ -61,12 +75,12 @@ const Step8ReviewSubmit = forwardRef((props, ref) => {
 
       if (showHighEmiWarning && !getValues().highEmiConsent) {
         customValid = false;
-        setError("highEmiConsent", {
-          type: "manual",
-          message: "You must acknowledge the high EMI warning to proceed.",
+        setError('highEmiConsent', {
+          type: 'manual',
+          message: 'You must acknowledge the high EMI warning to proceed.',
         });
       } else {
-        clearErrors("highEmiConsent");
+        clearErrors('highEmiConsent');
       }
 
       if (isValid && customValid) {
@@ -75,19 +89,6 @@ const Step8ReviewSubmit = forwardRef((props, ref) => {
       return isValid && customValid;
     },
   }));
-
-  const SectionHeader = ({ title, stepIndex }) => (
-    <div className="flex justify-between items-center mb-3 pb-2 border-b border-surface-200">
-      <h4 className="font-heading font-semibold text-gray-800">{title}</h4>
-      <button
-        type="button"
-        onClick={() => goToStep(stepIndex)}
-        className="text-sm text-primary-600 hover:text-primary-800 font-medium transition-colors"
-      >
-        Edit
-      </button>
-    </div>
-  );
 
   return (
     <div className="space-y-8">
@@ -122,13 +123,16 @@ const Step8ReviewSubmit = forwardRef((props, ref) => {
           <div className="bg-white p-3 rounded-lg border border-surface-200">
             <span className="text-gray-500 block text-xs mb-1">Interest Rate</span>
             <span className="font-bold text-gray-900 text-lg">
-              {(summary.annualRate * 100).toFixed(2)}%
+              {(summary.annualRate * 100).toFixed(2)}
+              %
             </span>
           </div>
           <div className="bg-white p-3 rounded-lg border border-surface-200">
             <span className="text-gray-500 block text-xs mb-1">Tenure</span>
             <span className="font-bold text-gray-900 text-lg">
-              {tenureMonths} mo
+              {tenureMonths}
+              {' '}
+              mo
             </span>
           </div>
         </div>
@@ -159,7 +163,13 @@ const Step8ReviewSubmit = forwardRef((props, ref) => {
           </svg>
           <div>
             <p className="font-semibold mb-1">High EMI Alert</p>
-            <p>Your calculated EMI ({formatINR(summary.emi)}) exceeds 50% of your total monthly income ({formatINR(summary.totalMonthlyIncome)}). This may impact your loan approval. Please provide your consent below if you wish to proceed.</p>
+            <p>
+              Your calculated EMI (
+              {formatINR(summary.emi)}
+              ) exceeds 50% of your total monthly income (
+              {formatINR(summary.totalMonthlyIncome)}
+              ). This may impact your loan approval. Please provide your consent below if you wish to proceed.
+            </p>
           </div>
         </div>
       )}
@@ -167,33 +177,33 @@ const Step8ReviewSubmit = forwardRef((props, ref) => {
       {/* Section-by-Section Summary */}
       <div className="space-y-6">
         <div className="bg-surface-50 border border-surface-200 rounded-xl p-5">
-          <SectionHeader title="1. Personal Information" stepIndex={2} />
+          <SectionHeader title="1. Personal Information" stepIndex={2} onEdit={goToStep} />
           <div className="grid grid-cols-2 gap-y-3 gap-x-4 text-sm">
             <div>
               <span className="text-gray-500 text-xs block">Full Name</span>
-              <span className="font-medium">{formData.step2.fullName || "N/A"}</span>
+              <span className="font-medium">{formData.step2.fullName || 'N/A'}</span>
             </div>
             <div>
               <span className="text-gray-500 text-xs block">Mobile Number</span>
-              <span className="font-medium">{formData.step2.mobileNumber || "N/A"}</span>
+              <span className="font-medium">{formData.step2.mobileNumber || 'N/A'}</span>
             </div>
             <div>
               <span className="text-gray-500 text-xs block">Email Address</span>
-              <span className="font-medium truncate block">{formData.step2.email || "N/A"}</span>
+              <span className="font-medium truncate block">{formData.step2.email || 'N/A'}</span>
             </div>
             <div>
               <span className="text-gray-500 text-xs block">PAN Number</span>
-              <span className="font-medium uppercase">{formData.step3.panNumber || "N/A"}</span>
+              <span className="font-medium uppercase">{formData.step3.panNumber || 'N/A'}</span>
             </div>
           </div>
         </div>
 
         <div className="bg-surface-50 border border-surface-200 rounded-xl p-5">
-          <SectionHeader title="2. Employment & Income" stepIndex={5} />
+          <SectionHeader title="2. Employment & Income" stepIndex={5} onEdit={goToStep} />
           <div className="grid grid-cols-2 gap-y-3 gap-x-4 text-sm">
             <div>
               <span className="text-gray-500 text-xs block">Employment Type</span>
-              <span className="font-medium capitalize">{formData.step5.employmentType?.replace('_', ' ') || "N/A"}</span>
+              <span className="font-medium capitalize">{formData.step5.employmentType?.replace('_', ' ') || 'N/A'}</span>
             </div>
             <div>
               <span className="text-gray-500 text-xs block">Calculated Monthly Income</span>
@@ -203,7 +213,7 @@ const Step8ReviewSubmit = forwardRef((props, ref) => {
               <>
                 <div>
                   <span className="text-gray-500 text-xs block">Co-Applicant Name</span>
-                  <span className="font-medium">{formData.step6.coapplicantName || "N/A"}</span>
+                  <span className="font-medium">{formData.step6.coapplicantName || 'N/A'}</span>
                 </div>
                 <div>
                   <span className="text-gray-500 text-xs block">Co-Applicant Income</span>
@@ -213,13 +223,22 @@ const Step8ReviewSubmit = forwardRef((props, ref) => {
             )}
           </div>
         </div>
-        
+
         <div className="bg-surface-50 border border-surface-200 rounded-xl p-5">
-          <SectionHeader title="3. Address Details" stepIndex={4} />
+          <SectionHeader title="3. Address Details" stepIndex={4} onEdit={goToStep} />
           <div className="text-sm">
-             <span className="text-gray-500 text-xs block">Current Address</span>
-             <span className="font-medium block">{formData.step4.currentAddress || "N/A"}</span>
-             <span className="font-medium block">{formData.step4.city}, {formData.step4.state} - {formData.step4.pincode}</span>
+            <span className="text-gray-500 text-xs block">Current Address</span>
+            <span className="font-medium block">{formData.step4.currentAddress || 'N/A'}</span>
+            <span className="font-medium block">
+              {formData.step4.city}
+              ,
+              {' '}
+              {formData.step4.state}
+              {' '}
+              -
+              {' '}
+              {formData.step4.pincode}
+            </span>
           </div>
         </div>
       </div>
@@ -234,7 +253,13 @@ const Step8ReviewSubmit = forwardRef((props, ref) => {
             </span>
           </div>
           <p className="text-xs text-gray-500 mt-2">
-            Digitally signed by {formData.step2.fullName} on {new Date().toLocaleDateString()}
+            Digitally signed by
+            {' '}
+            {formData.step2.fullName}
+            {' '}
+            on
+            {' '}
+            {new Date().toLocaleDateString()}
           </p>
         </div>
       )}

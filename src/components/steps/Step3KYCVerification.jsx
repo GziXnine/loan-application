@@ -1,13 +1,13 @@
 /** @format */
 
-import { forwardRef, useImperativeHandle, useEffect } from "react";
-import { useForm, Controller } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { getSchemaForStep } from "../../utils/schemaFactory";
-import useLoanStore from "../../store/loanStore";
-import MaskedInput from "../common/MaskedInput";
-import Checkbox from "../common/Checkbox";
-import useVerification from "../../hooks/useVerification";
+import { forwardRef, useImperativeHandle, useEffect } from 'react';
+import { useForm, Controller } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { getSchemaForStep } from '../../utils/schemaFactory';
+import useLoanStore from '../../store/loanStore';
+import MaskedInput from '../common/MaskedInput';
+import Checkbox from '../common/Checkbox';
+import useVerification from '../../hooks/useVerification';
 
 const Step3KYCVerification = forwardRef((props, ref) => {
   const stepData = useLoanStore((state) => state.getStepData(3));
@@ -25,16 +25,16 @@ const Step3KYCVerification = forwardRef((props, ref) => {
   } = useForm({
     resolver: zodResolver(getSchemaForStep(3, formData)),
     defaultValues: stepData,
-    mode: "onChange",
+    mode: 'onChange',
   });
 
-  const isPanVerified = watch("isPanVerified");
-  const isAadhaarVerified = watch("isAadhaarVerified");
-  const panValue = watch("panNumber");
-  const aadhaarValue = watch("aadhaarNumber");
+  const isPanVerified = watch('isPanVerified');
+  const isAadhaarVerified = watch('isAadhaarVerified');
+  const panValue = watch('panNumber');
+  const aadhaarValue = watch('aadhaarNumber');
 
-  const panVerification = useVerification(panValue, "pan");
-  const aadhaarVerification = useVerification(aadhaarValue, "aadhaar");
+  const panVerification = useVerification(panValue, 'pan');
+  const aadhaarVerification = useVerification(aadhaarValue, 'aadhaar');
 
   useImperativeHandle(ref, () => ({
     validate: async () => {
@@ -48,13 +48,13 @@ const Step3KYCVerification = forwardRef((props, ref) => {
   }));
 
   useEffect(() => {
-    setValue("isPanVerified", panVerification.isVerified, {
+    setValue('isPanVerified', panVerification.isVerified, {
       shouldValidate: true,
     });
   }, [panVerification.isVerified, setValue]);
 
   useEffect(() => {
-    setValue("isAadhaarVerified", aadhaarVerification.isVerified, {
+    setValue('isAadhaarVerified', aadhaarVerification.isVerified, {
       shouldValidate: true,
     });
   }, [aadhaarVerification.isVerified, setValue]);
@@ -89,10 +89,10 @@ const Step3KYCVerification = forwardRef((props, ref) => {
                   onChange={(e) => {
                     field.onChange(e);
                     // If they change it after verifying, reset verify status
-                    if (isPanVerified) setValue("isPanVerified", false);
+                    if (isPanVerified) setValue('isPanVerified', false);
                   }}
                   onBlur={() => {
-                    trigger("panNumber");
+                    trigger('panNumber');
                     panVerification.triggerVerification();
                   }}
                 />
@@ -100,51 +100,59 @@ const Step3KYCVerification = forwardRef((props, ref) => {
             />
           </div>
           <div className="min-w-[140px] mb-[18px]">
-            {panVerification.isVerifying ? (
-              <span className="inline-flex items-center gap-2 text-sm text-primary-600">
-                <svg
-                  className="animate-spin w-4 h-4"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                >
-                  <circle
-                    className="opacity-25"
-                    cx="12"
-                    cy="12"
-                    r="10"
-                    stroke="currentColor"
-                    strokeWidth="4"
-                  />
-                  <path
-                    className="opacity-75"
-                    fill="currentColor"
-                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
-                  />
-                </svg>
-                Verifying...
-              </span>
-            ) : isPanVerified ? (
-              <span className="inline-flex items-center gap-2 text-sm text-accent-600">
-                <svg
-                  className="w-4 h-4"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M5 13l4 4L19 7"
-                  />
-                </svg>
-                Verified
-              </span>
-            ) : (
-              <span className="text-xs text-gray-400">
-                Verification pending
-              </span>
-            )}
+            {(() => {
+              if (panVerification.isVerifying) {
+                return (
+                  <span className="inline-flex items-center gap-2 text-sm text-primary-600">
+                    <svg
+                      className="animate-spin w-4 h-4"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                    >
+                      <circle
+                        className="opacity-25"
+                        cx="12"
+                        cy="12"
+                        r="10"
+                        stroke="currentColor"
+                        strokeWidth="4"
+                      />
+                      <path
+                        className="opacity-75"
+                        fill="currentColor"
+                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+                      />
+                    </svg>
+                    Verifying...
+                  </span>
+                );
+              }
+              if (isPanVerified) {
+                return (
+                  <span className="inline-flex items-center gap-2 text-sm text-accent-600">
+                    <svg
+                      className="w-4 h-4"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M5 13l4 4L19 7"
+                      />
+                    </svg>
+                    Verified
+                  </span>
+                );
+              }
+              return (
+                <span className="text-xs text-gray-400">
+                  Verification pending
+                </span>
+              );
+            })()}
           </div>
         </div>
         {errors.isPanVerified && !errors.panNumber && (
@@ -174,10 +182,10 @@ const Step3KYCVerification = forwardRef((props, ref) => {
                   onChange={(e) => {
                     field.onChange(e);
                     // If they change it after verifying, reset verify status
-                    if (isAadhaarVerified) setValue("isAadhaarVerified", false);
+                    if (isAadhaarVerified) setValue('isAadhaarVerified', false);
                   }}
                   onBlur={() => {
-                    trigger("aadhaarNumber");
+                    trigger('aadhaarNumber');
                     aadhaarVerification.triggerVerification();
                   }}
                 />
@@ -185,51 +193,59 @@ const Step3KYCVerification = forwardRef((props, ref) => {
             />
           </div>
           <div className="min-w-[140px] mb-[18px]">
-            {aadhaarVerification.isVerifying ? (
-              <span className="inline-flex items-center gap-2 text-sm text-primary-600">
-                <svg
-                  className="animate-spin w-4 h-4"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                >
-                  <circle
-                    className="opacity-25"
-                    cx="12"
-                    cy="12"
-                    r="10"
-                    stroke="currentColor"
-                    strokeWidth="4"
-                  />
-                  <path
-                    className="opacity-75"
-                    fill="currentColor"
-                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
-                  />
-                </svg>
-                Verifying...
-              </span>
-            ) : isAadhaarVerified ? (
-              <span className="inline-flex items-center gap-2 text-sm text-accent-600">
-                <svg
-                  className="w-4 h-4"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M5 13l4 4L19 7"
-                  />
-                </svg>
-                Verified
-              </span>
-            ) : (
-              <span className="text-xs text-gray-400">
-                Verification pending
-              </span>
-            )}
+            {(() => {
+              if (aadhaarVerification.isVerifying) {
+                return (
+                  <span className="inline-flex items-center gap-2 text-sm text-primary-600">
+                    <svg
+                      className="animate-spin w-4 h-4"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                    >
+                      <circle
+                        className="opacity-25"
+                        cx="12"
+                        cy="12"
+                        r="10"
+                        stroke="currentColor"
+                        strokeWidth="4"
+                      />
+                      <path
+                        className="opacity-75"
+                        fill="currentColor"
+                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+                      />
+                    </svg>
+                    Verifying...
+                  </span>
+                );
+              }
+              if (isAadhaarVerified) {
+                return (
+                  <span className="inline-flex items-center gap-2 text-sm text-accent-600">
+                    <svg
+                      className="w-4 h-4"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M5 13l4 4L19 7"
+                      />
+                    </svg>
+                    Verified
+                  </span>
+                );
+              }
+              return (
+                <span className="text-xs text-gray-400">
+                  Verification pending
+                </span>
+              );
+            })()}
           </div>
         </div>
         {errors.isAadhaarVerified && !errors.aadhaarNumber && (
