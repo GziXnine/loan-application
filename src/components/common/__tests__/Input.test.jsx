@@ -1,9 +1,9 @@
 /** @format */
 
-import { render, screen } from "@testing-library/react";
-import Input from "../Input";
+import { render, screen } from '@testing-library/react';
+import Input from '../Input';
 
-test("renders label and error message", () => {
+test('renders label and error message', () => {
   render(
     <Input error="Required">
       <Input.Label required>Full Name</Input.Label>
@@ -12,6 +12,6 @@ test("renders label and error message", () => {
     </Input>,
   );
 
-  expect(screen.getByText("Full Name")).toBeInTheDocument();
-  expect(screen.getByText("Required")).toBeInTheDocument();
+  expect(screen.getByText('Full Name')).toBeInTheDocument();
+  expect(screen.getByText('Required')).toBeInTheDocument();
 });

@@ -1,11 +1,11 @@
 /** @format */
 
-import { render, screen } from "@testing-library/react";
-import userEvent from "@testing-library/user-event";
-import { vi } from "vitest";
-import Checkbox from "../Checkbox";
+import { render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import { vi } from 'vitest';
+import Checkbox from '../Checkbox';
 
-test("fires onChange when checkbox is clicked", async () => {
+test('fires onChange when checkbox is clicked', async () => {
   const handleChange = vi.fn();
   const user = userEvent.setup();
 
@@ -18,7 +18,7 @@ test("fires onChange when checkbox is clicked", async () => {
     />,
   );
 
-  const checkbox = screen.getByRole("checkbox", {
+  const checkbox = screen.getByRole('checkbox', {
     name: /i accept the terms/i,
   });
   await user.click(checkbox);
