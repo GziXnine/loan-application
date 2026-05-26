@@ -1,0 +1,50 @@
+{
+  "step1": {
+    "loanType": "personal",
+    "loanAmount": 400000,
+    "loanTenure": 36,
+    "loanPurpose": "medical_emergency"
+  },
+  "step2": {
+    "fullName": "Rahul Sharma",
+    "dateOfBirth": "1990-05-15",
+    "gender": "male",
+    "email": "rahul.sharma@example.com",
+    "mobileNumber": "9876543210",
+    "alternateMobile": "",
+    "maritalStatus": "single"
+  },
+  "step3": {
+    "panNumber": "ABCPD1234F",
+    "aadhaarNumber": "222422297045",
+    "aadhaarConsent": true
+  },
+  "step4": {
+    "residenceType": "owned",
+    "currentAddress": "12 MG Road, Central Area",
+    "pincode": "520001",
+    "city": "Vijayawada",
+    "state": "Andhra Pradesh",
+    "yearsAtCurrentAddress": 3,
+    "sameAsPermanent": true
+  },
+  "step5": {
+    "employmentType": "salaried",
+    "companyName": "Tech Corp India",
+    "designation": "Senior Developer",
+    "workExperience": 5,
+    "monthlyIncome": 150000
+  },
+  "step7": {
+    "identityProof": "documents/identity-proof.pdf",
+    "addressProof": "documents/address-proof.pdf",
+    "incomeProof": "documents/income-proof.pdf",
+    "additionalDocs": "documents/optional-doc.pdf"
+  },
+  "step8": {
+    "declarationAccepted": true,
+    "termsAccepted": true,
+    "kfsAccepted": true,
+    "consentToDataProcessing": true
+  }
+}

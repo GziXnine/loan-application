@@ -1,0 +1,60 @@
+{
+  "step1": {
+    "loanType": "home",
+    "loanAmount": 1000000,
+    "loanTenure": 120,
+    "loanPurpose": "home_improvement"
+  },
+  "step2": {
+    "fullName": "Ananya Iyer",
+    "dateOfBirth": "1988-02-10",
+    "gender": "female",
+    "email": "ananya.iyer@example.com",
+    "mobileNumber": "9123456789",
+    "alternateMobile": "",
+    "maritalStatus": "married"
+  },
+  "step3": {
+    "panNumber": "LMNPD2345Q",
+    "aadhaarNumber": "222422297045",
+    "aadhaarConsent": true
+  },
+  "step4": {
+    "residenceType": "owned",
+    "currentAddress": "221 Palm Residency, Lane 4",
+    "pincode": "781001",
+    "city": "Guwahati",
+    "state": "Assam",
+    "yearsAtCurrentAddress": 5,
+    "sameAsPermanent": true
+  },
+  "step5": {
+    "employmentType": "salaried",
+    "companyName": "FinBank Ltd",
+    "designation": "Product Manager",
+    "workExperience": 10,
+    "monthlyIncome": 200000
+  },
+  "step6": {
+    "hasCoapplicant": true,
+    "coapplicantName": "Vikram Iyer",
+    "coapplicantRelationship": "spouse",
+    "coapplicantIncome": 150000,
+    "coapplicantEmail": "vikram.iyer@example.com",
+    "coapplicantMobile": "9876501234",
+    "coapplicantPan": "XYZPD5678K",
+    "coapplicantConsent": true
+  },
+  "step7": {
+    "identityProof": "documents/identity-proof.pdf",
+    "addressProof": "documents/address-proof.pdf",
+    "incomeProof": "documents/income-proof.pdf",
+    "additionalDocs": "documents/property-document.pdf"
+  },
+  "step8": {
+    "declarationAccepted": true,
+    "termsAccepted": true,
+    "kfsAccepted": true,
+    "consentToDataProcessing": true
+  }
+}

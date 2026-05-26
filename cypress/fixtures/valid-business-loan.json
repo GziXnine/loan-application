@@ -1,0 +1,53 @@
+{
+  "step1": {
+    "loanType": "business",
+    "loanAmount": 800000,
+    "loanTenure": 48,
+    "loanPurpose": "business_expansion"
+  },
+  "step2": {
+    "fullName": "Suresh Kumar",
+    "dateOfBirth": "1985-11-20",
+    "gender": "male",
+    "email": "suresh.kumar@example.com",
+    "mobileNumber": "9988776655",
+    "alternateMobile": "",
+    "maritalStatus": "single"
+  },
+  "step3": {
+    "panNumber": "PQRPB6789L",
+    "aadhaarNumber": "222422297045",
+    "aadhaarConsent": true
+  },
+  "step4": {
+    "residenceType": "family_owned",
+    "currentAddress": "88 Market Street, Business District",
+    "pincode": "800001",
+    "city": "Patna",
+    "state": "Bihar",
+    "yearsAtCurrentAddress": 2,
+    "sameAsPermanent": true
+  },
+  "step5": {
+    "employmentType": "business_owner",
+    "businessName": "Kumar Exports Pvt Ltd",
+    "businessType": "Export Services",
+    "businessVintage": 6,
+    "annualTurnover": 25000000,
+    "monthlyProfit": 500000,
+    "companyRegistrationNumber": "U74999MH2018PTC123456",
+    "gstNumber": "27PQRPB6789L1ZI"
+  },
+  "step7": {
+    "identityProof": "documents/identity-proof.pdf",
+    "addressProof": "documents/address-proof.pdf",
+    "incomeProof": "documents/itr.pdf",
+    "additionalDocs": "documents/business-registration.pdf"
+  },
+  "step8": {
+    "declarationAccepted": true,
+    "termsAccepted": true,
+    "kfsAccepted": true,
+    "consentToDataProcessing": true
+  }
+}
