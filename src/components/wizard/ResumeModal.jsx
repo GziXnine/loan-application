@@ -47,6 +47,7 @@ export default function ResumeModal() {
         clearSavedState();
       }
     } catch (err) {
+      // eslint-disable-next-line no-console
       console.error(err);
       setShowResumeModal(false);
     } finally {
@@ -61,7 +62,7 @@ export default function ResumeModal() {
 
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center bg-gray-900/50 backdrop-blur-sm p-4 animate-fade-in">
-      <div 
+      <div
         className="bg-white rounded-2xl shadow-elevated w-full max-w-md overflow-hidden animate-slide-up"
         role="dialog"
         aria-modal="true"
@@ -73,15 +74,18 @@ export default function ResumeModal() {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
             </svg>
           </div>
-          
+
           <h2 id="modal-title" className="text-xl font-heading font-bold text-gray-900 mb-2">
             Resume Application?
           </h2>
           <p className="text-gray-600 mb-6 text-sm">
-            We found an incomplete loan application saved on <span className="font-semibold text-gray-800">{saveTime}</span>. 
+            We found an incomplete loan application saved on
+            {' '}
+            <span className="font-semibold text-gray-800">{saveTime}</span>
+            .
             Would you like to pick up where you left off, or start a new application?
           </p>
-          
+
           <div className="flex flex-col sm:flex-row gap-3">
             <button
               type="button"

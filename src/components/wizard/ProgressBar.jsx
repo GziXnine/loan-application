@@ -1,10 +1,10 @@
 import { useMemo } from 'react';
-import useLoanStore from '../../store/loanStore';
 import clsx from 'clsx';
+import useLoanStore from '../../store/loanStore';
 
 /**
  * ProgressBar Component
- * 
+ *
  * Displays the multi-step progress indicator with:
  * - Step numbers/icons with completion states
  * - Connecting lines with gradient fill
@@ -28,7 +28,10 @@ export default function ProgressBar() {
       <div className="mb-6">
         <div className="flex items-center justify-between mb-2">
           <span className="text-sm font-medium text-gray-700">Application Progress</span>
-          <span className="text-sm font-semibold text-primary-500">{progress}%</span>
+          <span className="text-sm font-semibold text-primary-500">
+            {progress}
+            %
+          </span>
         </div>
         <div className="h-2 bg-surface-200 rounded-full overflow-hidden">
           <div
@@ -50,8 +53,8 @@ export default function ProgressBar() {
           {visibleSteps.map((step, index) => {
             const isCompleted = completedSteps.has(step.id);
             const isCurrent = currentStep === step.id;
-            const isAccessible = isCompleted || isCurrent || (index === 0) ||
-              completedSteps.has(visibleSteps[index - 1]?.id);
+            const isAccessible = isCompleted || isCurrent || (index === 0)
+              || completedSteps.has(visibleSteps[index - 1]?.id);
 
             return (
               <li key={step.id} className="flex-1 relative">
@@ -63,8 +66,9 @@ export default function ProgressBar() {
                         'h-full transition-all duration-500',
                         isCompleted || isCurrent
                           ? 'bg-gradient-to-r from-accent-500 to-primary-500'
-                          : 'bg-surface-200'
-                      )} />
+                          : 'bg-surface-200',
+                      )}
+                      />
                     </div>
                   )}
 
@@ -86,9 +90,15 @@ export default function ProgressBar() {
                         'bg-white text-gray-500 border-2 border-surface-300 hover:border-primary-300 cursor-pointer': isAccessible && !isCurrent && !isCompleted,
                         // Disabled
                         'bg-surface-100 text-gray-400 border-2 border-surface-200 cursor-not-allowed': !isAccessible,
-                      }
+                      },
                     )}
-                    aria-label={`Step ${step.id}: ${step.title}${isCompleted ? ' (completed)' : isCurrent ? ' (current)' : ''}`}
+                    aria-label={`Step ${step.id}: ${step.title}${
+                      (() => {
+                        if (isCompleted) return ' (completed)';
+                        if (isCurrent) return ' (current)';
+                        return '';
+                      })()
+                    }`}
                     aria-current={isCurrent ? 'step' : undefined}
                   >
                     {isCompleted && !isCurrent ? (
@@ -108,8 +118,9 @@ export default function ProgressBar() {
                         'text-accent-600': isCompleted && !isCurrent,
                         'text-primary-600 font-semibold': isCurrent,
                         'text-gray-500': !isCurrent && !isCompleted,
-                      }
-                    )}>
+                      },
+                    )}
+                    >
                       {step.title}
                     </p>
                   </div>
@@ -128,15 +139,24 @@ export default function ProgressBar() {
               </div>
               <div>
                 <p className="text-sm font-semibold text-gray-900">
-                  {visibleSteps.find(s => s.id === currentStep)?.title}
+                  {visibleSteps.find((s) => s.id === currentStep)?.title}
                 </p>
                 <p className="text-2xs text-gray-500">
-                  Step {visibleSteps.findIndex(s => s.id === currentStep) + 1} of {visibleSteps.length}
+                  Step
+                  {' '}
+                  {visibleSteps.findIndex((s) => s.id === currentStep) + 1}
+                  {' '}
+                  of
+                  {' '}
+                  {visibleSteps.length}
                 </p>
               </div>
             </div>
             <div className="text-right">
-              <span className="text-sm font-bold text-primary-500">{progress}%</span>
+              <span className="text-sm font-bold text-primary-500">
+                {progress}
+                %
+              </span>
             </div>
           </div>
         </div>

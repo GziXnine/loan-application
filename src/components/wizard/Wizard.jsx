@@ -1,4 +1,6 @@
-import { lazy, Suspense, useCallback, useMemo, useRef, useEffect } from 'react';
+import {
+  lazy, Suspense, useCallback, useMemo, useRef, useEffect,
+} from 'react';
 import useLoanStore, { STEP_CONFIG, TOTAL_STEPS } from '../../store/loanStore';
 import ProgressBar from './ProgressBar';
 import StepNavigation from './StepNavigation';
@@ -48,15 +50,13 @@ function StepLoadingSkeleton() {
 
 /**
  * Wizard Component
- * 
+ *
  * The main orchestrator for the multi-step loan application.
  * Manages step rendering, validation gating, navigation,
  * and focus management for accessibility.
  */
 export default function Wizard() {
   const currentStep = useLoanStore((state) => state.currentStep);
-  const goToNextStep = useLoanStore((state) => state.goToNextStep);
-  const goToPrevStep = useLoanStore((state) => state.goToPrevStep);
   const markStepCompleted = useLoanStore((state) => state.markStepCompleted);
   const getVisibleSteps = useLoanStore((state) => state.getVisibleSteps);
   const isStepVisible = useLoanStore((state) => state.isStepVisible);
@@ -78,7 +78,7 @@ export default function Wizard() {
       // Small delay to allow the lazy component to render
       const timer = setTimeout(() => {
         const firstInput = stepContainerRef.current.querySelector(
-          'input:not([type="hidden"]), select, textarea, [tabindex="0"]'
+          'input:not([type="hidden"]), select, textarea, [tabindex="0"]',
         );
         if (firstInput) {
           firstInput.focus();
@@ -86,12 +86,13 @@ export default function Wizard() {
       }, 100);
       return () => clearTimeout(timer);
     }
+    return undefined;
   }, [currentStep]);
 
   // Handle browser back button via popstate
   useEffect(() => {
     const handlePopState = () => {
-      const hash = window.location.hash;
+      const { hash } = window.location;
       const stepMatch = hash.match(/#step-(\d+)/);
       if (stepMatch) {
         const step = parseInt(stepMatch[1], 10);
@@ -136,10 +137,10 @@ export default function Wizard() {
       setSubmitting(true);
       try {
         // Simulate API call
-        await new Promise((resolve) => setTimeout(resolve, 2000));
+        await new Promise((resolve) => { setTimeout(resolve, 2000); });
         setSubmitted(true);
       } catch (error) {
-        console.error('Submission failed:', error);
+        // error handling
       } finally {
         setSubmitting(false);
       }
@@ -182,7 +183,12 @@ export default function Wizard() {
   if (!StepComponent) {
     return (
       <div className="card p-8 text-center text-gray-500">
-        <p>Step {currentStep} is not available.</p>
+        <p>
+          Step
+          {currentStep}
+          {' '}
+          is not available.
+        </p>
       </div>
     );
   }
