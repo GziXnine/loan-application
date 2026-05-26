@@ -9,8 +9,7 @@ export default defineConfig({
     screenshotOnRunFailure: true,
     setupNodeEvents(on) {
       if (process.env.CYPRESS_LOG_BROWSER_ARGS === '1') {
-        // eslint-disable-next-line no-console
-        console.log('[cypress] setupNodeEvents initialized');
+        // Logging disabled for production/submission
       }
 
       on('before:browser:launch', (browser, launchOptions) => {
@@ -31,11 +30,7 @@ export default defineConfig({
           const interestingArgs = launchOptions.args.filter(
             (arg) => /--headless|gpu|swiftshader|VizDisplayCompositor/i.test(arg),
           );
-          // eslint-disable-next-line no-console
-          console.log(
-            `[cypress] launching ${browser.name} (${browser.family}) args:`,
-            interestingArgs,
-          );
+          // Logging disabled for production/submission
         }
 
         return launchOptions;
