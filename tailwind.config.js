@@ -76,9 +76,9 @@ export default {
         '4xl': '2rem',
       },
       boxShadow: {
-        'soft': '0 2px 15px -3px rgba(0, 0, 0, 0.07), 0 10px 20px -2px rgba(0, 0, 0, 0.04)',
-        'card': '0 0 0 1px rgba(0, 0, 0, 0.03), 0 2px 4px rgba(0, 0, 0, 0.05), 0 12px 24px rgba(0, 0, 0, 0.05)',
-        'elevated': '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1)',
+        soft: '0 2px 15px -3px rgba(0, 0, 0, 0.07), 0 10px 20px -2px rgba(0, 0, 0, 0.04)',
+        card: '0 0 0 1px rgba(0, 0, 0, 0.03), 0 2px 4px rgba(0, 0, 0, 0.05), 0 12px 24px rgba(0, 0, 0, 0.05)',
+        elevated: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1)',
         'glow-primary': '0 0 20px rgba(31, 78, 121, 0.15)',
         'glow-accent': '0 0 20px rgba(39, 174, 96, 0.15)',
         'glow-error': '0 0 20px rgba(231, 76, 60, 0.15)',
@@ -88,8 +88,8 @@ export default {
         'slide-up': 'slideUp 0.4s ease-out',
         'slide-in-right': 'slideInRight 0.3s ease-out',
         'pulse-soft': 'pulseSoft 2s ease-in-out infinite',
-        'shake': 'shake 0.5s ease-in-out',
-        'progress': 'progress 0.6s ease-out',
+        shake: 'shake 0.5s ease-in-out',
+        progress: 'progress 0.6s ease-out',
       },
       keyframes: {
         fadeIn: {
@@ -119,8 +119,8 @@ export default {
         },
       },
       spacing: {
-        '11': '2.75rem',
-        '13': '3.25rem',
+        11: '2.75rem',
+        13: '3.25rem',
       },
     },
   },

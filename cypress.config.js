@@ -1,4 +1,4 @@
-import { defineConfig } from "cypress";
+import { defineConfig } from 'cypress';
 
 export default defineConfig({
   e2e: {
@@ -7,7 +7,7 @@ export default defineConfig({
     viewportHeight: 720,
     video: false,
     screenshotOnRunFailure: true,
-    setupNodeEvents(on, config) {
+    setupNodeEvents(on) {
       if (process.env.CYPRESS_LOG_BROWSER_ARGS === '1') {
         // eslint-disable-next-line no-console
         console.log('[cypress] setupNodeEvents initialized');
@@ -28,8 +28,8 @@ export default defineConfig({
         }
 
         if (shouldLogArgs) {
-          const interestingArgs = launchOptions.args.filter((arg) =>
-            /--headless|gpu|swiftshader|VizDisplayCompositor/i.test(arg),
+          const interestingArgs = launchOptions.args.filter(
+            (arg) => /--headless|gpu|swiftshader|VizDisplayCompositor/i.test(arg),
           );
           // eslint-disable-next-line no-console
           console.log(
